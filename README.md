@@ -46,7 +46,7 @@ zeroshot-engine --help
 
 ### Iterative Double Validated Zero-Shot Classification (IDZSC)
 
-IDZSC is a core module that refines zero-shot classification results through an iterative process. It uses a double validation technique to ensure the robustness and accuracy of the classifications.
+IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
 
 ### Hierarchical Double Validated Zero-Shot Classification (HDZSC)
 
