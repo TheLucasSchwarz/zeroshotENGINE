@@ -14,29 +14,29 @@ requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
 ]
 dependencies = [
-        "pandas",
-        "numpy",
-        "tqdm",
-        "typing",
-        "semver",
-        "scikit-learn",
-        "openai",
-        "langchain-ollama",
+    "pandas",
+    "numpy",
+    "tqdm",
+    "typing",
+    "semver",
+    "scikit-learn",
+    "openai",
+    "langchain-ollama",
 ]
 license = {file = "LICENSE"}
 keywords = ["zero-shot", "classification", "NLP", "LLM"]
-homepage = "https://github.com/your-username/zeroshot-engine"
+
+[project.urls]
+Homepage = "https://github.com/TheLucasSchwarz/zeroshot-engine"
+"Bug Tracker" = "https://github.com/TheLucasSchwarz/zeroshot-engine/issues"
 
 [project.scripts]
 zeroshot-engine = "zeroshot_engine.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
