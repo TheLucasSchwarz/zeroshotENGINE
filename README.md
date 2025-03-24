@@ -115,8 +115,9 @@ For more detailed information about the framework and its implementation, please
 
 ### Planned Features
 
-*   Highest Priority: Extend functionality, that user can use more than the demo.
-*   Improved documentation and examples.
+*   List of supported LLMs
+*   Additional tutorial for double validation vs. zero-temp approach.
+*   Documentation of all relevant functions.
 *   Create prompting guidelines.
 *   Better integration and testing of validation metrics.
 *   Automated Logging System
