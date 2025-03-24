@@ -90,14 +90,19 @@ luc.schwarz@posteo.de
 
 If you use `zeroshot-engine` in your research, please cite it as follows:
 
+> Schwarz, L. (2025) „zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models“. Zenodo. doi: 10.5281/zenodo.15077242.
+
 ```bibtex
-@misc{zeroshotengine,
-  author = {Lucas Schwarz},
-  title = {zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models},
-  year = {2025},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/TheLucasSchwarz/zeroshotENGINE}}
+@software{schwarz_2025_15077242,
+  author       = {Schwarz, Lucas},
+  title        = {zeroshot-engine: A scientific zero-shot text
+                   classification engine based on various LLM models
+                  },
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {0.1.1},
+  doi          = {10.5281/zenodo.15077242},
+  url          = {https://doi.org/10.5281/zenodo.15077242},
 }
 ```
 
