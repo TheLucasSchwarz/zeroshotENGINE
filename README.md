@@ -65,13 +65,13 @@ HDZSC extends the zero-shot classification capabilities to hierarchical category
 ### Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
-* [Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md) - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
+* **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
 
-* [Performance Evaluation](docs/Performance_Evaluation.md) - Benchmark results and performance metrics across different models and classification tasks.
+* **[Performance Evaluation](docs/Performance_Evaluation.md)** - Benchmark results and performance metrics across different models and classification tasks.
 
-* [In-Depth-Demo-Explanation](docs/HDZSC_Demo_Showcase.md) - Learn how the HDZSC works in detail with many explanations.
+* **[In-Depth-Demo-Explanation](docs/HDZSC_Demo_Showcase.md)** - Learn how the HDZSC works in detail.
 
-* [Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md) - Learn how the HDZSC works in detail with many explanations.
+* **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
 ## Example Flow Chart
 ```
