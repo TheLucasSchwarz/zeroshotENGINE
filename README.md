@@ -25,18 +25,6 @@ pip install zeroshot-engine
 zeroshot-engine --help
 ```
 
-## Example
-
-```python
-from zeroshot_engine import ZeroShotClassifier
-
-classifier = ZeroShotClassifier(model="openai")
-categories = ["positive", "negative", "neutral"]
-text = "This is a great movie!"
-result = classifier.classify(text, categories)
-print(result)
-```
-
 ## Core Modules
 
 ### Iterative Double Validated Zero-Shot Classification (IDZSC)
@@ -83,6 +71,6 @@ If you use `zeroshot-engine` in your research, please cite it as follows:
   year = {2025},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/your-username/zeroshot-engine}}
+  howpublished = {\url{https://github.com/TheLucasSchwarz/zeroshot-engine}}
 }
 ```
