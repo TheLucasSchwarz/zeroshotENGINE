@@ -15,7 +15,7 @@ I am currently working on this manuscript, which analyzes political communicatio
 * This sample size, while informative, is relatively small for comprehensive model evaluation
 * I plan to expand this benchmark to 1000-1500 tweets in the near future to strengthen the reliability of our findings
 * This document will be updated with these expanded results once available
-Performance metrics may change with the larger benchmark dataset
+* Performance metrics may change with the larger benchmark dataset
 
 The current benchmark dataset includes tweets classified across multiple dimensions of political communication including presentation strategies, attack presence, and target identification. This multi-label, hierarchical dataset provides an initial testing ground for comparing different LLM implementations and prompt engineering approaches, but findings should be considered preliminary until validated with the expanded dataset.
 
@@ -42,7 +42,7 @@ Based on extensive testing in a Negative Campaiging hierarchical classification 
     * Despite being a larger model, performed slightly worse than GPT-4o mini on our benchmarks
     * Higher cost with no accuracy benefit for this specific classification task
   * Self-hosted via Google Colab on A100 GPU:
-    * Phi-3 or Phi-4
+    * Phi-4
     * Gemma2 9B
   * These models perform moderately well but show some accuracy reduction compared to GPT-4o mini
 
