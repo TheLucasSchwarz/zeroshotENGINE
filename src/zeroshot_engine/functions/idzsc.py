@@ -2,7 +2,6 @@ import random
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
@@ -12,30 +11,30 @@ from .base import classification_step, ensure_numeric, generate_prompt, get_prom
 
 @dataclass
 class CombinedPrediction:
-    pred1: Any
-    pred2: Any
+    pred1: any
+    pred2: any
     method: str
 
 
 def set_zeroshot_parameters(
     model_family: str = "openai",
-    client: Any = None,
+    client: any = None,
     model: str = "gpt-4o-mini",
     prompt_build: pd.DataFrame = None,
-    prompt_ids_list: List[str] = None,
+    prompt_ids_list: list[str] = None,
     prompt_id_col: str = "Prompt-ID",
-    prompt_block_cols: List[str] = None,
-    valid_keys: List[str] = None,
-    label_codes: Dict[str, Any] = None,
-    stop_conditions: Dict[int, Dict[str, Any]] = None,
-    output_types: Dict[str, str] = None,
-    combining_strategies: Dict[str, str] = None,
+    prompt_block_cols: list[str] = None,
+    valid_keys: list[str] = None,
+    label_codes: dict[str, any] = None,
+    stop_conditions: dict[int, dict[str, any]] = None,
+    output_types: dict[str, str] = None,
+    combining_strategies: dict[str, str] = None,
     max_retries: int = 1,
     feedback: bool = False,
     print_prompts: bool = False,
     debug: bool = False,
     validate: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, any]:
     """
     Creates and validates parameter dictionary for iterative double zero-shot classification.
 
@@ -45,16 +44,16 @@ def set_zeroshot_parameters(
 
     Args:
         model_family (str, optional): The model family to use. Defaults to "openai".
-        client (Any, optional): The initialized client object for model interaction. Defaults to None.
+        client (any, optional): The initialized client object for model interaction. Defaults to None.
         model (str, optional): The specific model to use. Defaults to "gpt-4o-mini".
         prompt_build (pd.DataFrame, optional): DataFrame containing the prompt components. Required.
-        prompt_ids_list (List[str], optional): List of prompt IDs to use for classification. Required.
+        prompt_ids_list (list[str], optional): list of prompt IDs to use for classification. Required.
         prompt_id_col (str, optional): Column name in prompt_build containing the prompt IDs. Defaults to "Prompt-ID".
-        prompt_block_cols (List[str], optional): Column names in prompt_build containing prompt blocks. Required.
-        valid_keys (List[str], optional): List of valid classification keys/labels that will be processed sequentially for each text. The order of this list determines the processing sequence - each key is processed in the order it appears in this list. For example, if valid_keys=["political", "attack", "target"], the system will first classify the text for "political" content, then for "attack" content, and finally identify any "target". This sequential processing allows for conditional logic through stop_conditions - if an earlier classification step returns a specific value (e.g., "political" is absent), later steps (like "attack" or "target") can be skipped to improve efficiency. Each key in this list should correspond to a classification output in your prompt templates. Required.
-        label_codes (Dict[str, Any], optional): Dictionary mapping label names to their code values.
+        prompt_block_cols (list[str], optional): Column names in prompt_build containing prompt blocks. Required.
+        valid_keys (list[str], optional): list of valid classification keys/labels that will be processed sequentially for each text. The order of this list determines the processing sequence - each key is processed in the order it appears in this list. For example, if valid_keys=["political", "attack", "target"], the system will first classify the text for "political" content, then for "attack" content, and finally identify any "target". This sequential processing allows for conditional logic through stop_conditions - if an earlier classification step returns a specific value (e.g., "political" is absent), later steps (like "attack" or "target") can be skipped to improve efficiency. Each key in this list should correspond to a classification output in your prompt templates. Required.
+        label_codes (dict[str, any], optional): dictionary mapping label names to their code values.
             Defaults to {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}.
-        stop_conditions (Dict[int, Dict[str, Any]], optional): Controls conditional classification flow.
+        stop_conditions (dict[int, dict[str, any]], optional): Controls conditional classification flow.
             Each key represents a step index (0-based) where conditions should be checked.
             The value is a dictionary with "condition" (threshold value) and "blocked_keys" (list of keys to skip).
             If the classification result for the key at the given step is less than or equal to the condition value,
@@ -62,9 +61,9 @@ def set_zeroshot_parameters(
             For example, {0: {"condition": 0, "blocked_keys": ["attack", "target"]}} means that if the first key
             (e.g., "political") returns 0 (absent), then "attack" and "target" keys won't be classified.
             Defaults to {}.
-        output_types (Dict[str, str], optional): Output type for each key ('numeric' or 'list').
+        output_types (dict[str, str], optional): Output type for each key ('numeric' or 'list').
             Defaults to all keys as 'numeric' except 'target' as 'list' if present.
-        combining_strategies (Dict[str, str], optional): Strategies for combining predictions.
+        combining_strategies (dict[str, str], optional): Strategies for combining predictions.
             Defaults to {"numeric": "optimistic", "list": "intersection"}.
         max_retries (int, optional): Maximum retries for failed classification steps. Defaults to 1.
         feedback (bool, optional): Whether to print classification progress. Defaults to False.
@@ -73,7 +72,7 @@ def set_zeroshot_parameters(
         validate (bool, optional): Whether to validate and combine multiple predictions. Defaults to True.
 
     Returns:
-        Dict[str, Any]: Complete parameter dictionary for classification.
+        dict[str, any]: Complete parameter dictionary for classification.
 
     Raises:
         ValueError: If required parameters are missing or invalid.
@@ -97,7 +96,7 @@ def set_zeroshot_parameters(
     - `prompt_block_cols` would be ["Block_A_Introduction", "Block_B_History", "Block_C_Task", "Block_D_Structure", "Block_E_Output"]
     - `prompt_ids_list` might be ["P1_political", "P2_presentation", "P3_attack", "P4_target"]
     - `valid_keys` would be ["political", "presentation", "attack", "target"]
-    - Any block containing only the string "empty" (like Block_B_History in the P1_political row) will be excluded from the final prompt, allowing for flexible prompt construction with optional sections.
+    - any block containing only the string "empty" (like Block_B_History in the P1_political row) will be excluded from the final prompt, allowing for flexible prompt construction with optional sections.
     - stop_condition must be defined as {
         0: {
             "condition": 0,
@@ -262,7 +261,7 @@ def set_zeroshot_parameters(
     if "list" not in combining_strategies:
         raise ValueError("combining_strategies must contain 'list'")
     if combining_strategies["list"] not in valid_list_strategies:
-        raise ValueError(f"List strategy must be one of {valid_list_strategies}")
+        raise ValueError(f"list strategy must be one of {valid_list_strategies}")
 
     # Construct and return the parameter dictionary
     parameters = {
@@ -290,20 +289,20 @@ def set_zeroshot_parameters(
 
 def iterative_zeroshot_classification(
     prompt_build: pd.DataFrame,
-    prompt_ids_list: List[str],
+    prompt_ids_list: list[str],
     prompt_id_col: str,
     prompt_block_cols: list[str],
     valid_keys: list[str],
-    label_codes: Dict[str, Any],
+    label_codes: dict[str, any],
     text: str,
-    stop_conditions: Dict[str, Any],
+    stop_conditions: dict[str, any],
     max_retries: int = 2,
     feedback: bool = False,
     print_prompts: bool = False,
     model: str = "gpt-4o-mini",
     model_family: str = "openai",
-    client: Any = None,
-    context: Dict[str, Any] = None,
+    client: any = None,
+    context: dict[str, any] = None,
     temperature: int = None,
     debug: bool = False,
 ) -> dict:
@@ -316,17 +315,17 @@ def iterative_zeroshot_classification(
         prompt_id_col (str): The prompt ID column name.
         prompt_block_cols (list[str]): Names of the prompt block columns.
         valid_keys (list[str]): list of valid keys to check in the response.
-        label_codes (dict[str, Any]): dictionary containing label codes.
+        label_codes (dict[str, any]): dictionary containing label codes.
         text (str): The text to classify.
-        stop_conditions (dict[str, Any]): dictionary defining the stop conditions.
+        stop_conditions (dict[str, any]): dictionary defining the stop conditions.
         max_retries (int, optional): Maximum number of retries for classification steps. Defaults to 2.
         feedback (bool, optional): Whether to print messages during classification. Defaults to False.
         print_prompts (bool, optional): Whether to print prompts (only if feedback is True). Defaults to False.
         debug (bool): Whether to print raw model responses for debugging.
         model (str, optional): Model to use for classification. Defaults to "gpt-4o-mini".
         model_family (str, optional): Family of models used. Defaults to "openai".
-        client (Any, optional): The client object to interact with the API.
-        context (Optional[dict[str, Any]], optional): Additional context for the prompt.
+        client (any, optional): The client object to interact with the API.
+        context (Optional[dict[str, any]], optional): Additional context for the prompt.
         temperature (Optional[int], optional): Optional temperature parameter.
 
 
@@ -410,9 +409,9 @@ def iterative_zeroshot_classification(
 
 
 def iterative_double_zeroshot_classification(
-    parameter: Dict,
+    parameter: dict,
     text: str,
-    context: dict[str, Any] = None,
+    context: dict[str, any] = None,
     validate: bool = True,
     strategy: str = None,
 ) -> pd.Series:
@@ -422,7 +421,7 @@ def iterative_double_zeroshot_classification(
     Args:
         parameter (dict): dictionary of parameters for classification.
         text (str): The text to classify.
-        context (Optional[dict[str, Any]], optional): Additional context to include in the prompt. Defaults to None.
+        context (Optional[dict[str, any]], optional): Additional context to include in the prompt. Defaults to None.
         validate (bool, optional): Whether to validate the classification results. Defaults to True.
         strategy (Optional[str], optional): Strategy for validation ("conservative", "optimistic", or "probabilistic").
             Defaults to the value in parameter or "conservative".

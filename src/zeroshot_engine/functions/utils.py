@@ -2,8 +2,6 @@ import pandas as pd
 from .base import initialize_model
 from .openai import setup_openai_api_key
 
-from typing import Dict, List, Any
-
 
 def get_demo_prompt_structure():
     """Create and return the prompt structure DataFrame."""
@@ -225,14 +223,14 @@ def get_demo_text_selection(interactive=True):
 
 
 def print_stop_conditions(
-    stop_conditions: Dict[int, Dict[str, Any]], valid_keys: List[str]
+    stop_conditions: dict[int, dict[str, any]], valid_keys: list[str]
 ):
     """
     Print a human-readable explanation of the stop conditions.
 
     Args:
-        stop_conditions: Dictionary of stop conditions
-        valid_keys: List of valid keys in order
+        stop_conditions: dictionary of stop conditions
+        valid_keys: list of valid keys in order
     """
     # Create a mapping from condition index to label name
     key_to_label = {i: label for i, label in enumerate(valid_keys)}
@@ -262,17 +260,17 @@ def print_stop_conditions(
 
 
 def parse_dependencies(
-    stop_conditions: Dict[int, Dict[str, Any]], valid_keys: List[str]
-) -> Dict[str, List[str]]:
+    stop_conditions: dict[int, dict[str, any]], valid_keys: list[str]
+) -> dict[str, list[str]]:
     """
     Parse the stop conditions into a dependencies dictionary.
 
     Args:
-        stop_conditions: Dictionary of stop conditions
-        valid_keys: List of valid keys in order
+        stop_conditions: dictionary of stop conditions
+        valid_keys: list of valid keys in order
 
     Returns:
-        Dictionary mapping each label to labels that depend on it
+        dictionary mapping each label to labels that depend on it
     """
     # Initialize dependencies with all valid keys
     dependencies = {}

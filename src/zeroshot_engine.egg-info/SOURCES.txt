@@ -1,4 +1,4 @@
-LICENSE.txt
+LICENSE
 README.md
 pyproject.toml
 src/zeroshot_engine/__init__.py
