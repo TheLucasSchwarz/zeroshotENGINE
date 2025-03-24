@@ -130,7 +130,7 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 
 ## Contributing
 
-We welcome contributions! Feel free to open issues for bug reports or feature requests. If you'd like to contribute code directly, please see our [contributing guidelines](CONTRIBUTING.md).
+Contributions are welcome! Feel free to open issues for bug reports or feature requests. If you'd like to contribute code directly, please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Author
 
