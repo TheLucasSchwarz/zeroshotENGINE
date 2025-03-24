@@ -1,8 +1,8 @@
 Metadata-Version: 2.4
 Name: zeroshot-engine
-Version: 0.1.0
+Version: 0.1.1
 Summary: A zero-shot classification engine based on various LLM models
-Author-email: Lucas Schwarz <luc.swz@example.com>
+Author-email: Lucas Schwarz <luc.schwarz@posteo.de>
 License: 
                                          Apache License
                                    Version 2.0, January 2004
@@ -217,14 +217,13 @@ Classifier: Programming Language :: Python :: 3.7
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: pandas
-Requires-Dist: numpy
-Requires-Dist: tqdm
-Requires-Dist: typing
-Requires-Dist: semver
-Requires-Dist: scikit-learn
-Requires-Dist: openai
-Requires-Dist: langchain-ollama
+Requires-Dist: pandas<3.0.0,>=2.0.0
+Requires-Dist: numpy<3.0.0,>=2.0.0
+Requires-Dist: tqdm>=4.60.0
+Requires-Dist: semver>=3.0.0
+Requires-Dist: scikit-learn<2.0.0,>=1.0.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: langchain-ollama<0.4.0,>=0.3.0
 Dynamic: license-file
 
 # zeroshot-engine

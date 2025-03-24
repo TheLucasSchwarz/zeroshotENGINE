@@ -1,8 +1,7 @@
-pandas
-numpy
-tqdm
-typing
-semver
-scikit-learn
-openai
-langchain-ollama
+pandas<3.0.0,>=2.0.0
+numpy<3.0.0,>=2.0.0
+tqdm>=4.60.0
+semver>=3.0.0
+scikit-learn<2.0.0,>=1.0.0
+openai>=1.0.0
+langchain-ollama<0.4.0,>=0.3.0
