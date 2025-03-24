@@ -58,7 +58,6 @@ HDZSC extends the zero-shot classification capabilities to hierarchical category
 *   Improved documentation and examples.
 *   Create prompting guidelines.
 *   Better integration and testing of validation metrics.
-*   For structured benchmarking and prompt engineering approach.
 *   Automated Logging System
 *   Add contribution guidelines.
 *   Support for more LLMs and APIs.
