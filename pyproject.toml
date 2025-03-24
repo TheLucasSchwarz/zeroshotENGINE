@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zeroshot-engine"
-version = "0.1.0"
+version = "0.1.1"
 description = "A zero-shot classification engine based on various LLM models"
 readme = "README.md"
 authors = [
-    {name = "Lucas Schwarz", email = "luc.swz@example.com"},
+    {name = "Lucas Schwarz", email = "luc.schwarz@posteo.de"},
 ]
 requires-python = ">=3.7"
 classifiers = [
