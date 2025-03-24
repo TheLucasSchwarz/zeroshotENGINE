@@ -100,6 +100,7 @@ The `iterative_double_zeroshot_classification` function orchestrates the followi
     *   The function uses the `prompt_build` DataFrame and the specified `prompt_ids_list` to construct prompts.
     *   Each prompt consists of blocks defined in `prompt_block_cols` (e.g., "Block\_A\_Introduction", "Block\_C\_Definition").
     *   These blocks are filled with instructions, definitions, and task descriptions to guide the LLM.
+    *   Every final prompt is than combined with the text and optional context of the current unit of analysis.
 
 2.  **LLM Interaction:**
     *   The prompts are sent to the LLM via the specified `client` and `model`.
@@ -110,8 +111,5 @@ The `iterative_double_zeroshot_classification` function orchestrates the followi
     *   It validates the output against the expected `output_types` (e.g., numeric, list) and uses `label_codes` to convert the predictions into a standardized format.
 
 4.  **Combining Strategies:**
-    *   If multiple prompts are used or if the iterative process generates multiple predictions, the function combines these predictions using the specified `combining_strategies`.
-*   **`set_zeroshot_parameters`:** This function is used to configure the `parameter` dictionary that is passed to `iterative_double_zeroshot_classification`. It sets up the prompts, defines the valid labels, and specifies the output types.
-*   **`get_demo_prompt_structure`:** This function provides example prompt structures for demonstration purposes.
-*   **`setup_demo_model`:** This function sets up the LLM client and model that will be used for classification.
+    *   If the classifier generates divergent predictions when processing a single unit task (using the “double classification per step” feature), the function combines these predictions using the specified `combining_strategies`.
 
