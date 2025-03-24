@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List
+
 import re
 
 import pandas as pd
@@ -32,9 +32,9 @@ def get_prompt_id(
 def generate_prompt(
     prompt_id_row: pd.DataFrame,
     prompt_id_col: str,
-    prompt_block_cols: List[str],
+    prompt_block_cols: list[str],
     text: str,
-    context: Dict[str, Any] = None,
+    context: dict[str, any] = None,
 ) -> str:
     """
     Generates a prompt string from different columns of DataFrame row and additional text and context information.
@@ -62,7 +62,7 @@ def generate_prompt(
 _LOADED_MODELS = {}
 
 
-def initialize_model(api: str, model: str) -> Any:
+def initialize_model(api: str, model: str) -> any:
     """
     Initializes the specified model based on the API.
 
@@ -71,7 +71,7 @@ def initialize_model(api: str, model: str) -> Any:
         model (str): The name of the model to initialize.
 
     Returns:
-        Any: The initialized model client.
+        any: The initialized model client.
     """
     cache_key = f"{api}:{model}"
 
@@ -159,18 +159,18 @@ def initialize_model(api: str, model: str) -> Any:
 def request_to_model(
     model: str = "gpt-4o-mini",
     model_family: str = "openai",
-    client: Any = None,
+    client: any = None,
     prompt: str = "",
     temperature: int = None,
     debug: bool = False,
-) -> Dict:
+) -> dict:
     """
     Sends a request to the specified model and returns the response as a dictionary.
 
     Args:
         model (str): The model to use for the request.
         model_family (str): The family of the model (e.g., "openai", "llama").
-        client (Any): The client object to interact with the API.
+        client (any): The client object to interact with the API.
         prompt (str): The prompt to send to the model.
         temperature (int, optional): The temperature to use for the model. Defaults to None.
         debug (bool, optional): Whether to print the raw model response. Defaults to False.
@@ -240,21 +240,21 @@ def request_to_model(
 def classification_step(
     model: str = "gpt-4o-mini",
     model_family: str = "openai",
-    client: Any = None,
+    client: any = None,
     prompt: str = "",
-    valid_keys: List[str] = None,
+    valid_keys: list[str] = None,
     current_key: str = "",
     print_messages: bool = False,
     max_retries: int = 2,
     temperature: int = None,
     debug: bool = False,
-) -> Dict:
+) -> dict:
     """
     Classifies the text using the model and the given prompt.
 
     Args:
         model (str): The model to use for classification.
-        client (Any): The client object to interact with the API.
+        client (any): The client object to interact with the API.
         prompt (str): The prompt to classify.
         valid_keys (list): A list of valid keys to check in the response.
         current_key (str): The currently classified label.

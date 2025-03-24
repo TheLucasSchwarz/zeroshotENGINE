@@ -1,10 +1,8 @@
-from typing import Any, Dict
-
 import pandas as pd
 
 
 def validate_double_zeroshot_predictions(
-    dataframe: pd.DataFrame, params: Dict[str, Any], recode_non_coded: bool
+    dataframe: pd.DataFrame, params: dict[str, any], recode_non_coded: bool
 ) -> pd.DataFrame:
     """
     Validate double zeroshot predictions for a given DataFrame.

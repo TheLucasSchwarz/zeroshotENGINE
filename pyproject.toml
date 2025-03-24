@@ -19,14 +19,13 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
 ]
 dependencies = [
-    "pandas",
-    "numpy",
-    "tqdm",
-    "typing",
-    "semver",
-    "scikit-learn",
-    "openai",
-    "langchain-ollama",
+    "pandas>=2.0.0,<3.0.0",
+    "numpy>=2.0.0,<3.0.0",
+    "tqdm>=4.60.0",
+    "semver>=3.0.0",
+    "scikit-learn>=1.0.0,<2.0.0",
+    "openai>=1.0.0",
+    "langchain-ollama>=0.3.0,<0.4.0",
 ]
 license = {file = "LICENSE"}
 keywords = ["zero-shot", "classification", "NLP", "LLM"]
