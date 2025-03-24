@@ -54,6 +54,7 @@ HDZSC extends the zero-shot classification capabilities to hierarchical category
 
 ### Planned Features
 
+*   Highest Priority: Extend functionality, that user can use more than the demo.
 *   Improved documentation and examples.
 *   Create prompting guidelines.
 *   Better integration and testing of validation metrics.
