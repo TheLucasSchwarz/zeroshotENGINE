@@ -69,6 +69,56 @@ For more detailed information about the framework and its implementation, please
 
 * [Performance Evaluation](docs/Performance_Evaluation.md) - Benchmark results and performance metrics across different models and classification tasks.
 
+## Example Flow Chart
+```
+
+
+==============================================================
+        ZEROSHOTENGINE DEMO LABEL DEPENDENCY FLOWCHART           
+==============================================================
+
+ [POLITICAL]
+ ├─ if political = 1:
+ │   [PRESENTATION]
+ │   [ATTACK]
+ │   ├─ if attack = 1:
+ │   │   [TARGET]
+ │   │   │
+ │   │   ▼
+ │   │   STOP
+ │   └─ if attack = 0:
+ │       → Skip: target
+ │       STOP
+ └─ if political = 0:
+     → Skip: presentation, attack, target
+     STOP
+
+--------------------------------------------------------------
+                 STOP CONDITIONS EXPLANATION                  
+--------------------------------------------------------------
+  If political = 0 (absent), the following steps are skipped:
+    - presentation
+    - attack
+    - target
+
+  If attack = 0 (absent), the following steps are skipped:
+    - target
+
+--------------------------------------------------------------
+                            LEGEND                            
+--------------------------------------------------------------
+ - 1 (present): Proceeds to the next classification step
+ - 0 (absent): Skips one or more subsequent classifications
+
+ LABEL CODES 
+    present: 1
+    absent: 0
+    non-coded: 8
+    empty-list: []
+
+--------------------------------------------------------------
+```
+
 
 ## License
 

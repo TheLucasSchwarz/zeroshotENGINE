@@ -1,0 +1,336 @@
+# Tutorial: Get started with the zeroshot-engine
+Here's a minimal example using the demo functions from your `zeroshot_engine` package. This example will demonstrate how to set up and run a zero-shot classification using the provided functions.
+
+We have two examples:
+
+* **Single Text Classification-Tutorial**: This example is good for setting up all the parameters.
+
+* **Parallel Processing of a DataFrame**: This example processes a DataFrame with 10 example texts in parallel, which is the typical scenario for scientific investigation (with more texts obviously).
+
+# Step-by-Step Tutorial
+
+## Single-Text-Scenario
+
+### 1. Set Up the Environment
+Ensure you have the necessary dependencies installed. If you haven't already, create and activate a virtual environment, then install the required packages:
+
+```python
+python3 -m venv test_venv
+source test_venv/bin/activate
+pip install zeroshot-engine
+```
+
+### 2. Create the Tutorial Script
+
+Create a new Python script, `tutorial_example.py`, in your project directory:
+
+```python
+import os
+import sys
+import time
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+
+# Set environment variables (if you have CUDA and want to use a local LLM)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["OLLAMA_CUDA"] = "1"
+
+from zeroshot_engine import initialize_model
+from zeroshot_engine import (
+    iterative_double_zeroshot_classification,
+    set_zeroshot_parameters,
+    get_demo_prompt_structure,
+    get_demo_stop_conditions,
+)
+
+# Load the demo data
+prompts_df = get_demo_prompt_structure()
+
+prompt_blocks_columns = [
+    "Block_A_Introduction",
+    "Block_B_History",
+    "Block_C_Definition",
+    "Block_D_Task",
+    "Block_E_Structure",
+    "Block_F_Output",
+]
+
+labels = ["political", "presentation", "attack", "target"]
+
+label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
+
+stop_condition = get_demo_stop_conditions()
+
+# Choose the model you want to use.
+client = initialize_model("ollama", "gemma2:2b")
+# client = initialize_model("openai", "gpt-4o-mini")
+
+# Set zero-shot parameters# Full hierarchical example with all parameters and specialized settings
+parameters = set_zeroshot_parameters(
+    model_family="gemma",  # alternatively: openai
+    client=client,
+    model="gemma2:2b",  # alternatively: gpt-4o-mini
+    prompt_build=prompts_df,
+    prompt_ids_list=[
+        "P1_political_naive",
+        "P2_presentation_naive",
+        "P3_attack_naive",
+        "P4_target_naive",
+    ],
+    prompt_id_col="Prompt-ID",
+    prompt_block_cols=prompt_blocks_columns,
+    valid_keys=labels,
+    label_codes=label_values,
+    stop_conditions=stop_condition,
+    output_types={
+        "political": "numeric",
+        "presentation": "numeric",
+        "attack": "numeric",
+        "target": "list",
+    },
+    validate=True,
+    combining_strategies={
+        "numeric": "optimistic",
+        "list": "union",
+    },
+    max_retries=2,
+    feedback=True,
+)
+
+# Example text for classification (the politician and party this example is chosen from is was chosen at random only for demonstration purposes)
+text = "'Für uns ist klar: Staatsschulden sind eine Gefahr für die Wirtschafts- und Währungsunion'. 'Das Schuldenmachen zur neuen Staatsphilosophie zu verklären' wird mit uns als #FDP nicht gehen, werter @OlafScholz! #Regierungserklaerung  #Bundestag  @fdpbt"
+
+# Perform classification
+start_time = time.time()  # Record start time
+
+result = iterative_double_zeroshot_classification(
+    text=text,
+    parameter=parameters,
+    context={
+        "lang": "German",
+        "author": "Gerald Ullrich",
+        "platform": "Twitter",
+        "date": "2021-05-15",
+        "party": "FDP",
+    },
+)
+
+end_time = time.time()  # Record end time
+elapsed_time = end_time - start_time  # Calculate elapsed time
+
+print(f"Time taken: {elapsed_time:.2f} seconds")
+print(result)
+```
+
+### 3. Run the Tutorial Script
+Run the script to see the output:
+
+```python
+python tutorial_example.py
+```
+
+## Explanation
+* Environment Setup: The script sets up the environment variables and adds the project root to the Python path.
+* Demo Data: It uses demo functions to get the prompt structure and stop conditions.
+Model Initialization: The setup_demo_model function initializes the model.
+* Parameter Setup: The set_zeroshot_parameters function sets up the parameters for zero-shot classification.
+* Classification: The iterative_double_zeroshot_classification function performs the classification on the example text.
+* Output: The script prints the time taken and the classification result.
+
+This minimal example demonstrates how to use the demo functions to set up and run a zero-shot classification with your `zeroshot_engine` package.
+
+
+
+## Parallel-Text-Scenario
+Here's a second subvariant that demonstrates how to process an entire DataFrame in parallel using the `parallel_iterative_double_zeroshot_classification` function.
+
+### 0. If not already done, set up the environment:
+
+```python
+python3 -m venv test_venv
+source test_venv/bin/activate
+pip install zeroshot-engine
+```
+
+
+### 1. Create the Parallel Processing Script
+Create a new Python script, `parallel_example.py`, in your project directory:
+
+
+```python
+import os
+import sys
+import pandas as pd
+
+# Add the project root to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+
+# Set environment variables (if you have CUDA and want to use a local LLM)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["OLLAMA_CUDA"] = "1"
+
+from zeroshot_engine import initialize_model
+from zeroshot_engine import (
+    parallel_iterative_double_zeroshot_classification,
+    set_zeroshot_parameters,
+    get_demo_prompt_structure,
+    get_demo_stop_conditions,
+)
+
+# Load the demo data
+prompts_df = get_demo_prompt_structure()
+
+prompt_blocks_columns = [
+    "Block_A_Introduction",
+    "Block_B_History",
+    "Block_C_Definition",
+    "Block_D_Task",
+    "Block_E_Structure",
+    "Block_F_Output",
+]
+
+labels = ["political", "presentation", "attack", "target"]
+
+label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
+
+stop_condition = get_demo_stop_conditions()
+
+# Choose the model you want to use.
+client = initialize_model(api="openai", model="gpt-4o-mini")
+
+# Set zero-shot parameters# Full hierarchical example with all parameters and specialized settings
+parameters = set_zeroshot_parameters(
+    model_family="openai",  # alternatively: gemma
+    client=client,
+    model="gpt-4o-mini",  # alternatively: gemma2:9b
+    prompt_build=prompts_df,
+    prompt_ids_list=[
+        "P1_political_with_definition",
+        "P2_presentation_with_definition",
+        "P3_attack_with_definition",
+        "P4_target_with_definition",
+    ],
+    prompt_id_col="Prompt-ID",
+    prompt_block_cols=prompt_blocks_columns,
+    valid_keys=labels,
+    label_codes=label_values,
+    stop_conditions=stop_condition,
+    output_types={
+        "political": "numeric",
+        "presentation": "numeric",
+        "attack": "numeric",
+        "target": "list",
+    },
+    validate=True,
+    combining_strategies={
+        "numeric": "conservative",
+        "list": "union",
+    },
+    max_retries=2,
+    feedback=False,
+)
+
+# Create the example DataFrame (generated by an LLM, no actual posts.)
+df = pd.DataFrame(
+    {
+        "text": [
+            "We need to invest more in renewable energy to combat climate change. The opposition continues to ignore scientific evidence.",
+            "Today I announced our new healthcare plan that will benefit all citizens. Together we can build a better future.",
+            "Our economic policies have created thousands of jobs. Unlike @OppositionParty who only raised taxes during their term.",
+            "Yesterday I was swimming on the beach.",
+            "Our infrastructure plan will create jobs and improve our roads and bridges. It's time to invest in our future.",
+            "The opposition's stance on healthcare is dangerous and irresponsible. We need to protect our citizens.",
+            "Climate change is the biggest threat to our planet. We must act now to reduce emissions and invest in renewable energy.",
+            "Our tax cuts have benefited millions of families. The opposition wants to raise taxes and hurt our economy.",
+            "We need to support our military and veterans. They have sacrificed so much for our country.",
+            "The opposition's plan to defund the police is reckless. We need to ensure the safety of our communities.",
+        ],
+        "lang": ["English"] * 10,
+        "author": [
+            "Jane Smith",
+            "John Doe",
+            "Sarah Johnson",
+            "Michael Brown",
+            "Emily Davis",
+            "David Wilson",
+            "Laura Martinez",
+            "James Anderson",
+            "Patricia Thomas",
+            "Robert Jackson",
+        ],
+        "platform": [
+            "Twitter",
+            "Facebook",
+            "Twitter",
+            "Twitter",
+            "Facebook",
+            "Twitter",
+            "Facebook",
+            "Twitter",
+            "Facebook",
+            "Twitter",
+        ],
+        "date": [
+            "2023-06-15",
+            "2023-07-22",
+            "2023-08-10",
+            "2023-09-01",
+            "2023-09-15",
+            "2023-10-05",
+            "2023-10-20",
+            "2023-11-01",
+            "2023-11-15",
+            "2023-12-01",
+        ],
+        "party": [
+            "Green Party",
+            "Democrats",
+            "Republicans",
+            "Democrats",
+            "Republicans",
+            "Green Party",
+            "Democrats",
+            "Republicans",
+            "Green Party",
+            "Democrats",
+        ],
+    }
+)
+
+# Process the entire DataFrame in parallel
+results_df = parallel_iterative_double_zeroshot_classification(
+    data=df,  # Pass the example DataFrame with text and context columns
+    parameter=parameters,
+    context=[
+        "lang",
+        "author",
+        "platform",
+        "date",
+        "party",
+    ],  # Use all context columns from df
+    num_workers=4,  # Adjust based on your system's capabilities
+)
+
+# The returned results_df will have all original columns plus classification results
+selected_columns = ["text"] + labels
+print(results_df[selected_columns].head(n=10))
+
+
+```
+
+### 2. Run the Parallel Processing Script
+Run the script to see the output:
+
+```python
+python parallel_example.py
+```
+### Explanation
+* Environment Setup: The script sets up the environment variables and adds the project root to the Python path.
+* Demo Data: It uses demo functions to get the prompt structure and stop conditions.
+* Model Initialization: The initialize_model function initializes the model.
+* Parameter Setup: The set_zeroshot_parameters function sets up the parameters for zero-shot classification.
+* Parallel Classification: The parallel_iterative_double_zeroshot_classification function processes the entire DataFrame in parallel.
+* Output: The script prints the first few rows of the resulting DataFrame, which includes the original columns plus the classification results.
+
+This second subvariant demonstrates how to process an entire DataFrame in parallel using the parallel_iterative_double_zeroshot_classification function with your `zeroshot_engine package`.
