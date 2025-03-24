@@ -1,0 +1,2 @@
+[console_scripts]
+zeroshot-engine = zeroshot_engine.cli:main

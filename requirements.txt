@@ -1,0 +1,10 @@
+langchain-ollama
+pandas
+numpy
+ruff
+tqdm
+openai
+typing
+scikit-learn
+semver
+openpyxl

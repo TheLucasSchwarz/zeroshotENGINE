@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import sys
+import os
+# Add src directory to Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+from zeroshotengine.cli import main
+
+if __name__ == "__main__":
+    main()
+
+# Make it executable
+chmod +x /home/lucsw/projects/zeroshotENGINE/bin/run-zeroshotengine
+/home/lucsw/projects/zeroshotENGINE/bin/run-zeroshotengine flowchart
+# Inspect the entry point script
+cat $(which zeroshotengine) 
+
+# Run with Python module execution
+python -m zeroshotengine.cli flowchart
+pip install -e .
+exit()
+exit
+asdlkjnlaj<shdkl<
+[200~# Remove the zeroshotengine script
+rm $(which zeroshotengine)
+
+# Reinstall with force reinstall
+pip install --force-reinstall -e .~

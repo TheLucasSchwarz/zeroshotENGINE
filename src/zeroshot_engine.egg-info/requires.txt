@@ -1,0 +1,8 @@
+pandas
+numpy
+tqdm
+typing
+semver
+scikit-learn
+openai
+langchain-ollama

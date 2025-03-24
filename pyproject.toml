@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zeroshot-engine"
+version = "0.1.0"
+description = "A zero-shot classification engine based on various LLM models"
+readme = "README.md"
+authors = [
+    {name = "Lucas Schwarz", email = "luc.swz@example.com"},
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+]
+dependencies = [
+        "pandas",
+        "numpy",
+        "tqdm",
+        "typing",
+        "semver",
+        "scikit-learn",
+        "openai",
+        "langchain-ollama",
+]
+license = {file = "LICENSE"}
+keywords = ["zero-shot", "classification", "NLP", "LLM"]
+homepage = "https://github.com/your-username/zeroshot-engine"
+
+[project.scripts]
+zeroshot-engine = "zeroshot_engine.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
