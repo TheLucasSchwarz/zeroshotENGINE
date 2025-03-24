@@ -52,17 +52,7 @@ IDZSC is the core module to classify texts in an iterative process. It can use a
 
 HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
-### Planned Features
-
-*   Highest Priority: Extend functionality, that user can use more than the demo.
-*   Improved documentation and examples.
-*   Create prompting guidelines.
-*   Better integration and testing of validation metrics.
-*   Automated Logging System
-*   Add contribution guidelines.
-*   Support for more LLMs and APIs.
-
-### Documentation
+### Documentation - Get started
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
 * **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
@@ -123,6 +113,15 @@ For more detailed information about the framework and its implementation, please
 --------------------------------------------------------------
 ```
 
+### Planned Features
+
+*   Highest Priority: Extend functionality, that user can use more than the demo.
+*   Improved documentation and examples.
+*   Create prompting guidelines.
+*   Better integration and testing of validation metrics.
+*   Automated Logging System
+*   Add contribution guidelines.
+*   Support for more LLMs and APIs.
 
 ## License
 
