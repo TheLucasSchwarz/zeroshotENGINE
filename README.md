@@ -74,3 +74,6 @@ If you use `zeroshot-engine` in your research, please cite it as follows:
   howpublished = {\url{https://github.com/TheLucasSchwarz/zeroshot-engine}}
 }
 ```
+
+
+![PyPI Publishing](https://github.com/TheLucasSchwarz/zeroshot-engine/actions/workflows/python-publish.yml/badge.svg)
