@@ -24,7 +24,8 @@ wheels/
 *venv/
 venv*/
 ENV/
-zeroshotENGINEvenv\
+zeroshotENGINEvenv/
+fresh_venv/
 
 # IDE files
 .idea/
