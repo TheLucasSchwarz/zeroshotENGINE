@@ -69,6 +69,10 @@ For more detailed information about the framework and its implementation, please
 
 * [Performance Evaluation](docs/Performance_Evaluation.md) - Benchmark results and performance metrics across different models and classification tasks.
 
+* [In-Depth-Demo-Explanation](docs/HDZSC_Demo_Showcase.md) - Learn how the HDZSC works in detail with many explanations.
+
+* [Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md) - Learn how the HDZSC works in detail with many explanations.
+
 ## Example Flow Chart
 ```
 
