@@ -174,10 +174,23 @@ Here's a second subvariant that demonstrates how to process an entire DataFrame 
 ### 0. If not already done, set up the environment:
 
 ```bash
+pip install virtualenv
+```
+
+#### On Linux/Mac
+```bash
 python3 -m venv test_venv
 source test_venv/bin/activate
 pip install zeroshot-engine
 ```
+
+#### On Windows
+```bash
+python3 -m venv test_venv
+test_venv\Scripts\activate
+pip install zeroshot-engine
+```
+
 
 
 ### 1. Create the Parallel Processing Script
