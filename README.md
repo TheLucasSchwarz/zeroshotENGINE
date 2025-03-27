@@ -1,12 +1,20 @@
 # zeroshot-engine
 
-A scientific zero-shot text classification engine based on various LLM models.
+A open-source scientific zero-shot text classification engine based on various LLM models.
 
-## Description
+## 📖 Description
 
 This project provides a flexible framework for performing zero-shot classification using large language models and pandas. It allows you to classify text into categories without requiring explicit training data for those categories. All instructions to LLMs are provided by mere natural language prompts. The framework is designed to support a wide range of text classification tasks including multi-label, multi-class, and single-class classification scenarios.
 
-## Features
+## 🎯 Purpose
+
+This package was developed as part of an academic research project to systematically classify political communication. The primary goal was to create an easy-to-use and accessible framework for building adaptable zero-shot classifications with large language models (LLMs) across a wide variety of text analysis tasks. By providing a flexible and intuitive tool, this project aims to empower students and researchers—especially those in social sciences—to explore, evaluate, and harness the potential of zero-shot classification while addressing its challenges in a user-friendly environment. I have no financial interest in this project.
+
+## 🌍 Open-Source and Non-Commercial
+
+This project is fully open-source and was developed with no financial interests. It is intended to support academic research and the broader scientific community. Contributions are welcome to help improve the framework and expand its capabilities.
+
+## ✨ Features
 
 *   Handles multi-label, multi-class, and single-class classification tasks.
 *   Option for incorporating few-shot learning through the flexible prompt engineering approach.
@@ -15,7 +23,7 @@ This project provides a flexible framework for performing zero-shot classificati
 *   Customizable prompts.
 *   Integration with pandas for data handling.
 
-### Key Concepts
+### 💡 Key Concepts
 
 *   **Zero-Shot Learning:** The ability of a model to make predictions on unseen classes or tasks without prior training on those specific classes or tasks. The system learns entirely through natural language instructions, eliminating the need for labeled examples or fine-tuning.
 *   **Sequential Classification:** A process where tasks are performed in a series of steps without strict dependencies (IDZSC approach).
@@ -23,26 +31,38 @@ This project provides a flexible framework for performing zero-shot classificati
 *   **Multi-Prompting:** The use of multiple different prompts for different tasks to elicit more comprehensive and reliable predictions from the model.
 *   **Modular Prompt Design:** While not automated in the current implementation, the modular prompt design with text blocks facilitates manual testing and refinement of prompts to improve classification accuracy.
 
+## 🚧 Notice: Under Development
 
-## Installation
+> **Note:**  
+> While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
+> There may be bugs, incomplete features, or areas for improvement.  
+> 
+> If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
+> - Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
+> - Submit a pull request with your contributions.  
+> - Contact the author directly at **luc.schwarz@posteo.de**.  
+> 
+> Contributions are highly appreciated and will help improve the framework for the scientific community!
+
+## 🚀 Get Started
 
 ```bash
 pip install zeroshot-engine
 ```
 
-## Demo
-
+### 🖥️ Interactive Demo directly in your the command line
+Test the zeroshotENGINE in the HDZSC-scenario by  from a wide variety of LLMs and bring your own text
 ```bash
 zeroshot-engine demo
 ```
 
-## Usage
+### ⚙️ Usage
 
 ```bash
 zeroshot-engine --help
 ```
 
-## Core Modules
+## 🧩 Core Modules
 
 ### Iterative Double Validated Zero-Shot Classification (IDZSC)
 
@@ -52,7 +72,7 @@ IDZSC is the core module to classify texts in an iterative process. It can use a
 
 HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
-### Documentation - Get started
+## 📚 Documentation - Get started
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
 * **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
@@ -63,7 +83,7 @@ For more detailed information about the framework and its implementation, please
 
 * **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
-## Example Flow Chart
+## 📈 Example Flow Chart
 ```
 
 
@@ -113,7 +133,7 @@ For more detailed information about the framework and its implementation, please
 --------------------------------------------------------------
 ```
 
-### Planned Features
+### 📅 Planned Features
 
 *   List of supported LLMs
 *   Additional tutorial for double validation vs. zero-temp approach.
@@ -124,23 +144,23 @@ For more detailed information about the framework and its implementation, please
 *   Add contribution guidelines.
 *   Support for more LLMs and APIs.
 
-## License
+## 📜 License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
-## Contributing
+## 🫱🏼‍🫲🏼 Contributing
 
 Contributions are welcome! Feel free to open issues for bug reports or feature requests. If you'd like to contribute code directly, please see the [contributing guidelines](CONTRIBUTING.md).
 
-## Author
+## 🤵 Author
 
 Lucas Schwarz
 
-## Contact
+## 📧 Contact
 
 luc.schwarz@posteo.de
 
-## Citation
+## 🏛️ Citation
 
 If you use `zeroshot-engine` in your research, please cite it as follows:
 
@@ -159,6 +179,3 @@ If you use `zeroshot-engine` in your research, please cite it as follows:
   url          = {https://doi.org/10.5281/zenodo.15079108},
 }
 ```
-
-
-![PyPI Publishing](https://github.com/TheLucasSchwarz/zeroshot-engine/actions/workflows/python-publish.yml/badge.svg)
