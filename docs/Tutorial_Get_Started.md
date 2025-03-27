@@ -58,7 +58,7 @@ prompt_blocks_columns = [
 labels = ["political", "presentation", "attack", "target"]
 
 # Define the corresponding row of the prompt table for each label
-label_prompt_ids = ["P1_political_naive", "P2_presentation_naive", "P3_attack_naive", "P4_target__naive"]
+label_prompt_ids = ["P1_political_naive", "P2_presentation_naive", "P3_attack_naive", "P4_target_naive"]
 
 # Define the possible values the labels can receive
 label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
