@@ -2,15 +2,15 @@
 
 A open-source scientific zero-shot text classification engine based on various LLM models.
 
-## 📖 Description
+### 📖 Description
 
 This project provides a flexible framework for performing zero-shot classification using large language models and pandas. It allows you to classify text into categories without requiring explicit training data for those categories. All instructions to LLMs are provided by mere natural language prompts. The framework is designed to support a wide range of text classification tasks including multi-label, multi-class, and single-class classification scenarios.
 
-## 🎯 Purpose
+### 🎯 Purpose
 
 This package was developed as part of an academic research project to systematically classify political communication. The primary goal was to create an easy-to-use and accessible framework for building adaptable zero-shot classifications with large language models (LLMs) across a wide variety of text analysis tasks. By providing a flexible and intuitive tool, this project aims to empower students and researchers—especially those in social sciences—to explore, evaluate, and harness the potential of zero-shot classification while addressing its challenges in a user-friendly environment. I have no financial interest in this project.
 
-## 🌍 Open-Source and Non-Commercial
+### 🌍 Open-Source and Non-Commercial
 
 This project is fully open-source and was developed with no financial interests. It is intended to support academic research and the broader scientific community. Contributions are welcome to help improve the framework and expand its capabilities.
 
@@ -43,17 +43,6 @@ This project is fully open-source and was developed with no financial interests.
 > - Contact the author directly at **luc.schwarz@posteo.de**.  
 > 
 > Contributions are highly appreciated and will help improve the framework for the scientific community!
-
-
-<div style="border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 10px; border-radius: 5px; color: #721c24;">
-<strong>Note:</strong> While the core functionality of <code>zeroshot-engine</code> is operational, this project is still under active development.  
-There may be bugs, incomplete features, or areas for improvement.  
-If you encounter any issues or have feature requests, please feel free to:  
-<ul>
-  <li>Open an issue on the <a href="https://github.com/your-repo-link/issues">GitHub repository</a>.</li>
-  <li>Contact the author directly at <strong>luc.schwarz@posteo.de</strong>.</li>
-</ul>
-</div>
 
 ## 🚀 Get Started
 
