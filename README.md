@@ -135,17 +135,16 @@ For more detailed information about the framework and its implementation, please
 *   Support for more LLMs and APIs.
 
 ## 🚧 Notice: Under Development
+**Note:**  
+While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
+There may be bugs, incomplete features, or areas for improvement.  
 
-> **Note:**  
-> While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
-> There may be bugs, incomplete features, or areas for improvement.  
-> 
-> If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
-> - Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
-> - Submit a pull request with your contributions.  
-> - Contact the author directly at **luc.schwarz@posteo.de**.  
-> 
-> Contributions are highly appreciated and will help improve the framework for the scientific community!
+If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
+* Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
+* Submit a pull request with your contributions.  
+* Contact the author directly at **luc.schwarz@posteo.de**.  
+
+Contributions are highly appreciated and will help improve the framework for the scientific community!
 
 ## 📜 License
 
