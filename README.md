@@ -33,18 +33,15 @@ This project is fully open-source and was developed with no financial interests.
 *   **Multi-Prompting:** The use of multiple different prompts for different tasks to elicit more comprehensive and reliable predictions from the model.
 *   **Modular Prompt Design:** While not automated in the current implementation, the modular prompt design with text blocks facilitates manual testing and refinement of prompts to improve classification accuracy.
 
-## 🚧 Notice: Under Development
+### Core Modules
 
-> **Note:**  
-> While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
-> There may be bugs, incomplete features, or areas for improvement.  
-> 
-> If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
-> - Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
-> - Submit a pull request with your contributions.  
-> - Contact the author directly at **luc.schwarz@posteo.de**.  
-> 
-> Contributions are highly appreciated and will help improve the framework for the scientific community!
+#### Iterative Double Validated Zero-Shot Classification (IDZSC)
+
+IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
+
+#### Hierarchical Double Validated Zero-Shot Classification (HDZSC)
+
+HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
 ## 🚀 Get Started
 Install the `zeroshot-engine` package using pip in your Windows Powershell or Linux / Mac Bash Terminal.
@@ -63,16 +60,6 @@ This command will guide you through an interactive demo where you can:
 * Provide your own text for classification or use a provided example text.
 * Observe how the hierarchical classification process works in real-time.
 
-## 🧩 Core Modules
-
-### Iterative Double Validated Zero-Shot Classification (IDZSC)
-
-IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
-
-### Hierarchical Double Validated Zero-Shot Classification (HDZSC)
-
-HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
-
 ## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
@@ -86,8 +73,6 @@ For more detailed information about the framework and its implementation, please
 
 ### Example Flow Chart
 ```
-
-
 ==============================================================
         ZEROSHOTENGINE DEMO LABEL DEPENDENCY FLOWCHART           
 ==============================================================
@@ -144,6 +129,19 @@ For more detailed information about the framework and its implementation, please
 *   Automated Logging System
 *   Add contribution guidelines.
 *   Support for more LLMs and APIs.
+
+## 🚧 Notice: Under Development
+
+> **Note:**  
+> While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
+> There may be bugs, incomplete features, or areas for improvement.  
+> 
+> If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
+> - Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
+> - Submit a pull request with your contributions.  
+> - Contact the author directly at **luc.schwarz@posteo.de**.  
+> 
+> Contributions are highly appreciated and will help improve the framework for the scientific community!
 
 ## 📜 License
 
