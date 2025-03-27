@@ -46,6 +46,7 @@ pip install zeroshot-engine
 
 ### Interactive Demo in the Command Line
 Test the `zeroshot-engine` in the HDZSC-scenario by selecting from a wide variety of LLMs and bringing your own text for classification:
+
 **On Linux/Mac:**
 ```bash
 zeroshot-engine demo
