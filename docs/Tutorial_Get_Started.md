@@ -93,8 +93,22 @@ combining_strategy_output = {
     "list": "union",
 }
 
-# Get the stop condition from the demo project
-stop_condition = get_demo_stop_conditions()
+# Define the stop condition from the demo project
+stop_condition = {
+    0: {
+        "condition": 0,
+        "blocked_keys": [
+            "presentation",
+            "attack",
+            "target",
+        ],
+    },
+    2: {
+        "condition": 0,
+        "blocked_keys": ["target"],
+    },
+}
+
 
 # Display the defined hierarchical structure
 display_label_flowchart(
@@ -253,7 +267,7 @@ combining_strategy_output = {
     "list": "union",
 }
 
-# Get the stop condition from the demo project
+# Define the stop condition from the demo project
 stop_condition = {
     0: {
         "condition": 0,
