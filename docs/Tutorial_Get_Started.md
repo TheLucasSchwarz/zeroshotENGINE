@@ -54,6 +54,7 @@ prompt_blocks_columns = [
     "Block_F_Output",
 ]
 
+# Define all labels we want to classify
 labels = ["political", "presentation", "attack", "target"]
 
 # Define the corresponding row of the prompt table for each label
