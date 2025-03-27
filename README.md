@@ -59,7 +59,7 @@ This command will guide you through an interactive demo where you can:
 
 **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)**: This tutorial provides example code for your first test project, which you can use as a template to build and adapt your own research projects. For more detailed information and advanced usage, please refer to the [Documentation].
 
-### Documentation
+## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
 * **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
