@@ -401,6 +401,7 @@ print(results_df[selected_columns].head(n=10))
 The `parallel_example.py` script uses a parallel workflow that can be resource-intensive with local LLMs. Ensure that your computer has sufficient processing power and memory to handle the parallel execution. Running this script on systems with limited resources may lead to performance issues or crashes. **Low-end PCs will not be able to handel additional tasks during the run of this script on parallel workers.**
 
 It is recommended to:
+- Use the Openai API, as this reduces the parallel workload on the machine to parallel data organization. 
 - Use a machine with multiple CPU cores and sufficient RAM, better a CUDA capable GPU.
 - Adjust the `num_workers` parameter in the script to match your system's capabilities (e.g., reduce it to `2` or `1` for low-end systems with no parallel processing).
 
