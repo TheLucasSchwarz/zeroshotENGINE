@@ -165,19 +165,18 @@ Create a new Python script, `parallel_example.py`, in your project directory:
 
 ```python
 import os
-import sys
 import pandas as pd
 
 # Set environment variables (if you have CUDA and want to use a local LLM)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["OLLAMA_CUDA"] = "1"
 
-from zeroshot_engine import initialize_model
 from zeroshot_engine import (
+    initialize_model,
     parallel_iterative_double_zeroshot_classification,
     set_zeroshot_parameters,
     get_demo_prompt_structure,
-    get_demo_stop_conditions,
+    display_label_flowchart,
 )
 
 # Load the demo promopts
@@ -197,29 +196,52 @@ prompt_blocks_columns = [
 labels = ["political", "presentation", "attack", "target"]
 
 # Define the corresponding row of the prompt table for each label
-label_prompt_ids = ["P1_political_with_definition", "P2_presentation_with_definition", "P3_attack_with_definition", "P4_target_with_definition"]
+label_prompt_ids = [
+    "P1_political_with_definition",
+    "P2_presentation_with_definition",
+    "P3_attack_with_definition",
+    "P4_target_with_definition",
+]
 
 # Define the possible values the labels can receive
 label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
 
 # Define the possible output_types each specific label can have
 output_type_labels = {
-        "political": "numeric",
-        "presentation": "numeric",
-        "attack": "numeric",
-        "target": "list",
-    } 
+    "political": "numeric",
+    "presentation": "numeric",
+    "attack": "numeric",
+    "target": "list",
+}
 
 # Define the mismatch strategy per output_type
 combining_strategy_output = {
-        "numeric": "optimistic",
-        "list": "union",
-    }
+    "numeric": "optimistic",
+    "list": "union",
+}
 
 # Get the stop condition from the demo project
-stop_condition = get_demo_stop_conditions()
+stop_condition = {
+    0: {
+        "condition": 0,
+        "blocked_keys": [
+            "presentation",
+            "attack",
+            "target",
+        ],
+    },
+    2: {
+        "condition": 0,
+        "blocked_keys": ["target"],
+    },
+}
 
-# Choose the model you want to use.
+# Display the defined hierarchical structure
+display_label_flowchart(
+    valid_keys=labels, stop_conditions=stop_condition, label_codes=label_values
+)
+
+# Choose the model you want to use
 client = initialize_model(api="openai", model="gpt-4o-mini")
 
 # Set zero-shot parameters# Full hierarchical example with all parameters and specialized settings
@@ -245,14 +267,14 @@ parameters = set_zeroshot_parameters(
 df = pd.DataFrame(
     {
         "text": [
-            "We need to invest more in renewable energy to combat climate change. The opposition continues to ignore scientific evidence.",
+            "We need to invest more in renewable energy to combat climate change. The government continues to ignore scientific evidence.",
             "Today I announced our new healthcare plan that will benefit all citizens. Together we can build a better future.",
             "Our economic policies have created thousands of jobs. Unlike @OppositionParty who only raised taxes during their term.",
             "Yesterday I was swimming on the beach.",
             "Our infrastructure plan will create jobs and improve our roads and bridges. It's time to invest in our future.",
             "The opposition's stance on healthcare is dangerous and irresponsible. We need to protect our citizens.",
             "Climate change is the biggest threat to our planet. We must act now to reduce emissions and invest in renewable energy.",
-            "Our tax cuts have benefited millions of families. The opposition wants to raise taxes and hurt our economy.",
+            "Our tax cuts have benefited millions of families. The democrats wants to raise taxes and hurt our economy.",
             "We need to support our military and veterans. They have sacrificed so much for our country.",
             "The opposition's plan to defund the police is reckless. We need to ensure the safety of our communities.",
         ],
@@ -325,7 +347,6 @@ results_df = parallel_iterative_double_zeroshot_classification(
 # The returned results_df will have all original columns plus classification results
 selected_columns = ["text"] + labels
 print(results_df[selected_columns].head(n=10))
-
 
 ```
 
