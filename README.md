@@ -55,7 +55,7 @@ This command will guide you through an interactive demo where you can:
 * Provide your own text for classification or use a provided example text.
 * Observe how the hierarchical classification process works in real-time.
 
-### Run your first zeroshot project in python
+### Run your first Zeroshot Classification Project in Python
 
 **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)**: This tutorial provides example code for your first test project, which you can use as a template to build and adapt your own research projects. For more detailed information and advanced usage, please refer to the [Documentation].
 
