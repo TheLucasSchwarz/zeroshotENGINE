@@ -1,5 +1,6 @@
 import os
 import sys
+import getpass
 
 
 def setup_openai_api_key():
@@ -35,9 +36,14 @@ def setup_openai_api_key():
             "• Your OpenAI API key is stored locally only in the .env file or temporary environment variable"
         )
         print("• The key is never transmitted to any third-party servers")
-        print("• API calls are made directly to OpenAI's servers using your key")
-        print("• The source code is open and can be reviewed")
+        print(
+            "• API calls are only made directly to OpenAI's servers using your key via the official OpenAI Python Package\n"
+        )
+        print(
+            "• The source code is open and can be reviewed under: https://github.com/TheLucasSchwarz/zeroshotENGINE\n"
+        )
         print("• For security, never commit the .env file to public repositories")
+        print("• When using .env and git, add the .env to you gitignore")
         print("• You can delete your API key from .env at any time")
         print("--------------------------------")
 
@@ -60,13 +66,17 @@ def setup_openai_api_key():
 
         if key_choice == "1":
             # Use key for this session only
-            api_key = input("Enter your OpenAI API key: ").strip()
+            api_key = getpass.getpass(
+                "Enter your OpenAI API key (input hidden): "
+            ).strip()
             os.environ["OPENAI_API_KEY"] = api_key
             print("✅ API key set for this session")
 
         elif key_choice == "2":
             # Save to .env file
-            api_key = input("Enter your OpenAI API key: ").strip()
+            api_key = getpass.getpass(
+                "Enter your OpenAI API key (input hidden): "
+            ).strip()
             os.environ["OPENAI_API_KEY"] = api_key
 
             env_path = os.path.join(os.getcwd(), ".env")

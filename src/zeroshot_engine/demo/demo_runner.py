@@ -14,6 +14,7 @@ from zeroshot_engine.functions.utils import (
     get_demo_stop_conditions,
     setup_demo_model,
     get_demo_text_selection,
+    ask_to_display_label_structure,
 )
 
 # Set environment variables for GPU acceleration if needed
@@ -25,6 +26,10 @@ def set_classification_parameters(
     model_family, client, model_name, prompts_df, stop_condition
 ):
     """Set up the classification parameters for both naive and with definition approaches."""
+
+    valid_keys = ["political", "presentation", "attack", "target"]
+    label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
+
     parameters_naive = set_zeroshot_parameters(
         model_family=model_family,
         client=client,
@@ -45,8 +50,8 @@ def set_classification_parameters(
             "Block_E_Structure",
             "Block_F_Output",
         ],
-        valid_keys=["political", "presentation", "attack", "target"],
-        label_codes={"present": 1, "absent": 0, "non-coded": 8, "empty-list": []},
+        valid_keys=valid_keys,
+        label_codes=label_values,
         stop_conditions=stop_condition,
         output_types={
             "political": "numeric",
@@ -85,8 +90,8 @@ def set_classification_parameters(
             "Block_E_Structure",
             "Block_F_Output",
         ],
-        valid_keys=["political", "presentation", "attack", "target"],
-        label_codes={"present": 1, "absent": 0, "non-coded": 8, "empty-list": []},
+        valid_keys=valid_keys,
+        label_codes=label_values,
         stop_conditions=stop_condition,
         output_types={
             "political": "numeric",
@@ -105,7 +110,7 @@ def set_classification_parameters(
         debug=False,
     )
 
-    return parameters_naive, parameters_with_definitions
+    return (parameters_naive, parameters_with_definitions, valid_keys, label_values)
 
 
 def run_classification(text, parameters, context, description):
@@ -125,6 +130,91 @@ def run_classification(text, parameters, context, description):
     print(f"⏱️  {description} completed in {elapsed_time:.2f} seconds\n")
 
     return result
+
+
+def display_combined_results(result, label_values):
+    """
+    Display a reorganized view of the classification results.
+
+    The output shows:
+      - Final combined predictions for each label along with their corresponding codes.
+      - The individual predictions from two runs (with the same prompt setup).
+      - The methods used to combine these predictions.
+      - Total number of validation conflicts.
+
+    Args:
+        result (pandas.Series): The classification result.
+        label_values (dict): Mapping of label codes, e.g. {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
+    """
+    # Define labels to display
+    final_labels = ["political", "presentation", "attack", "target"]
+
+    # Create an inverted mapping for non-list label codes
+    code_to_label = {}
+    for key, value in label_values.items():
+        if not isinstance(value, list):
+            code_to_label[value] = key
+        else:
+            # Assume list values are represented as a string for display purposes
+            code_to_label[str(value)] = key
+
+    print("\n📊 Final Classification Codes:")
+    print("-------------------------")
+    for label in final_labels:
+        final_val = result.get(label, "N/A")
+        if final_val != "N/A":
+            # For lists compare via string conversion
+            if isinstance(final_val, list):
+                meaning = code_to_label.get(str(final_val), "")
+            else:
+                meaning = code_to_label.get(final_val, "")
+            if meaning:
+                print(f"{label:25}: {final_val} ({meaning})")
+            else:
+                print(f"{label:25}: {final_val}")
+        else:
+            print(f"{label:25}: {final_val}")
+
+    print(
+        "\nCombined from individual predictions (two runs with the same prompt setup):"
+    )
+    print("-------------------------")
+    for label in final_labels:
+        pred1 = result.get(label + "_pred1", "N/A")
+        pred2 = result.get(label + "_pred2", "N/A")
+        if pred1 != "N/A":
+            if isinstance(pred1, list):
+                meaning1 = code_to_label.get(str(pred1), "")
+            else:
+                meaning1 = code_to_label.get(pred1, "")
+        else:
+            meaning1 = ""
+        if pred2 != "N/A":
+            if isinstance(pred2, list):
+                meaning2 = code_to_label.get(str(pred2), "")
+            else:
+                meaning2 = code_to_label.get(pred2, "")
+        else:
+            meaning2 = ""
+        if meaning1:
+            print(f"{label + '_pred1':25}: {pred1} ({meaning1})")
+        else:
+            print(f"{label + '_pred1':25}: {pred1}")
+        if meaning2:
+            print(f"{label + '_pred2':25}: {pred2} ({meaning2})")
+        else:
+            print(f"{label + '_pred2':25}: {pred2}")
+
+    print("\nBy these methods:")
+    print("-------------------------")
+    for label in final_labels:
+        method_val = result.get(label + "_method", "N/A")
+        print(f"{label + '_method':25}: {method_val}")
+
+    print("\nValidation Conflicts:")
+    print("-------------------------")
+    conflict = result.get("validation_conflict", "N/A")
+    print(f"{'validation_conflict':25}: {conflict}")
 
 
 def run_demo_classification(interactive=True):
@@ -152,8 +242,10 @@ def run_demo_classification(interactive=True):
 
     # Set classification parameters
     print("\n\n⚙️  Configuring classification parameters...")
-    parameters_naive, parameters_with_definitions = set_classification_parameters(
-        model_family, client, model_name, prompts_df, stop_condition
+    parameters_naive, parameters_with_definitions, labels, label_values = (
+        set_classification_parameters(
+            model_family, client, model_name, prompts_df, stop_condition
+        )
     )
 
     # Print the text to analyze
@@ -162,8 +254,11 @@ def run_demo_classification(interactive=True):
     print(text)
     print("-------------------------")
 
+    # Ask the user if they want to display the hierarchical structure
+    ask_to_display_label_structure(labels, label_values, stop_condition)
+
     # Determine which classifications to run based on text source
-    if not interactive:
+    if not interactive:  # the quickdemo
         # Run both classification methods
         result_naive = run_classification(
             text,
@@ -172,23 +267,10 @@ def run_demo_classification(interactive=True):
             "Classification (Naive without Definition)",
         )
 
-        result_with_definitions = run_classification(
-            text,
-            parameters_with_definitions,
-            context,
-            "Classification (with Definitions)",
-        )
+        # Display results
+        display_combined_results(result_naive, label_values)
 
-        # Display results for both methods
-        print("\n\n📊 Classification Results: (Naive without Definition)")
-        print("-------------------------")
-        print(result_naive)
-
-        print("\n\n📊 Classification Results: (With Definition)")
-        print("-------------------------")
-        print(result_with_definitions)
-    else:  # User-provided text
-        # Only run with definitions
+    else:  # the interactive demo with user provided text
         result = run_classification(
             text,
             parameters_with_definitions,
@@ -197,9 +279,9 @@ def run_demo_classification(interactive=True):
         )
 
         # Display results
-        print("\n\n📊 Classification Results:")
-        print("-------------------------")
-        print(result)
+        display_combined_results(result, label_values)
 
-    print("\n✅ Demo completed!")
+    print(
+        "\n✅ Demo completed! To learn more about the package look into the documentation under https://github.com/TheLucasSchwarz/zeroshotENGINE."
+    )
     return True

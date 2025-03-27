@@ -1,6 +1,7 @@
 import pandas as pd
 from .base import initialize_model
 from .openai import setup_openai_api_key
+from .visualization import display_label_flowchart
 
 
 def get_demo_prompt_structure():
@@ -119,37 +120,55 @@ def setup_demo_model(interactive=True):
     # Ask user which model to use
     print("\n\n🤖 Model Selection")
     print("-------------------------")
-    print("1. Run gemma2:9b locally (faster, but less accurate - requires Ollama)")
-    print("2. Run phi-4:latest locally (better quality, but slower - requires Ollama)")
     print(
-        "3. Use GPT-4o-mini via OpenAI API (best quality - requires API key + costs money)"
+        "1. Run gemma2:2b locally (basic model: very weak, but small and fast (suitable for low-end PCs) - requires Ollama)"
     )
+    print(
+        "2. Run gemma2:9b locally (intermediate model: better accuracy than gemma2:2b, but slower - requires Ollama)"
+    )
+    print(
+        "3. Run phi-4:latest locally (advanced model: usually high quality, but significantly slower - requires Ollama)"
+    )
+    print(
+        "4. Use GPT-4o-mini via OpenAI API (premium model: best quality, but requires an API key and incurs costs - requires OPENAI API KEY)"
+    )
+    print("5. Stop Demo")
     print("-------------------------")
 
     while True:
-        choice = input("\nEnter your choice (1, 2, or 3): ").strip()
-        if choice in ["1", "2", "3"]:
+        choice = input("\nEnter your choice (1, 2, 3, 4, or 5): ").strip()
+        if choice in ["1", "2", "3", "4", "5"]:
             break
-        print("❌ Invalid choice. Please enter 1, 2, or 3.")
+        print("❌ Invalid choice. Please enter 1, 2, 3, 4, or 5.")
 
     # Initialize the model based on user choice
     if choice == "1":
         print("\n\n🤖 Model Initialization")
         print("-------------------------")
-        print("Initializing model 'gemma2:9b' locally...")
-        print("This model runs faster but may provide less accurate results.")
-        client = initialize_model("ollama", "gemma2:9b")
-        model_name = "gemma2:9b"
+        print("Initializing model 'gemma2:2b' locally...")
+        print("This model is very weak but small and fast, suitable for low-end PCs.\n")
+        client = initialize_model("ollama", "gemma2:2b")
+        model_name = "gemma2:2b"
         model_family = "gemma"
     elif choice == "2":
         print("\n\n🤖 Model Initialization")
         print("-------------------------")
+        print("Initializing model 'gemma2:9b' locally...")
+        print("This model has better accuracy than gemma2:2b but runs slower.\n")
+        client = initialize_model("ollama", "gemma2:9b")
+        model_name = "gemma2:9b"
+        model_family = "gemma"
+    elif choice == "3":
+        print("\n\n🤖 Model Initialization")
+        print("-------------------------")
         print("Initializing model 'phi4:latest' locally...")
-        print("This model provides better quality but runs slower than gemma2.")
+        print(
+            "This model provides usually high quality but is significantly slower than gemma2:9b.\n"
+        )
         client = initialize_model("ollama", "phi4:latest")
         model_name = "phi4:latest"
         model_family = "phi"
-    else:
+    elif choice == "4":
         # OpenAI API setup
         print("\n\n🔑 OpenAI API setup")
         print("--------------------------------")
@@ -157,12 +176,74 @@ def setup_demo_model(interactive=True):
 
         # Continue with OpenAI initialization
         print("🤖 Initializing model 'gpt-4o-mini' via API...")
+        print(
+            "This model provides the best quality but requires an API key and incurs costs.\n"
+        )
         client = initialize_model("openai", "gpt-4o-mini")
         model_name = "gpt-4o-mini"
         model_family = "openai"
+    else:
+        # Stop Demo
+        print("\n🛑 Demo stopped by user.")
+        exit()
 
     print("-------------------------")
     return client, model_name, model_family
+
+
+def ask_to_display_label_structure(labels, label_values, stop_condition):
+    """
+    Ask the user if they want to display the hierarchical structure of the labels.
+
+    Args:
+        labels (list): List of labels to classify.
+        label_values (dict): Possible values the labels can receive.
+        stop_condition (dict): Stop conditions for the hierarchical structure.
+
+    Returns:
+        None
+    """
+    print("\n🔍 Display Label Hierarchical Structure")
+    print("----------------------------------------")
+    print(
+        "Would you like to display the hierarchical structure of the labels before the classification run?"
+    )
+    print("1. Yes, show me the label structure.")
+    print("2. No, proceed directly to the classification.")
+    print("----------------------------------------")
+
+    while True:
+        user_choice = input("Enter your choice (1 or 2): ").strip()
+        if user_choice in ["1", "2"]:
+            break
+        print("❌ Invalid choice. Please enter 1 or 2.")
+
+    if user_choice == "1":
+        print("\n📊 Displaying the hierarchical structure of the labels:")
+        display_label_flowchart(
+            valid_keys=labels, stop_conditions=stop_condition, label_codes=label_values
+        )
+        print("\n✅ Hierarchical structure displayed (scroll up to see it).")
+
+        # Ask the user if they want to proceed
+        print("\n➡️  Do you want to proceed?")
+        print("1. Yes")
+        print("2. No (Exit)")
+        print("----------------------------------------")
+
+        while True:
+            proceed_choice = input("Enter your choice (1 or 2): ").strip()
+            if proceed_choice in ["1", "2"]:
+                break
+            print("❌ Invalid choice. Please enter 1 or 2.")
+
+        if proceed_choice == "2":
+            print("\n🛑 Demo stopped by user.")
+            exit()
+        else:
+            print("\n✅ Proceeding with the next step.")
+    else:
+        print("\n✅ Skipping the display of the hierarchical structure.")
 
 
 def get_demo_text_selection(interactive=True):
@@ -196,18 +277,19 @@ def get_demo_text_selection(interactive=True):
         "1. Use default German text (translated) and context from German Federal Election 2021"
     )
     print("2. Enter your own text (without context information needed).")
+    print("3. Stop Demo")
     print("-------------------------")
 
     while True:
-        text_choice = input("\nEnter your choice (1 or 2): ").strip()
-        if text_choice in ["1", "2"]:
+        text_choice = input("\nEnter your choice (1, 2, or 3): ").strip()
+        if text_choice in ["1", "2", "3"]:
             break
-        print("❌ Invalid choice. Please enter 1 or 2.")
+        print("❌ Invalid choice. Please enter 1, 2, or 3.")
 
     if text_choice == "1":
         # Return default text and context
         return default_text, default_context
-    else:
+    elif text_choice == "2":
         # User provides their own text
         user_text = input("\nEnter the text you want to analyze: ").strip()
 
@@ -220,6 +302,10 @@ def get_demo_text_selection(interactive=True):
             "date": "unknown",
         }
         return user_text, minimal_context
+    else:
+        # Stop Demo
+        print("\n🛑 Demo stopped by user.")
+        exit()
 
 
 def print_stop_conditions(
