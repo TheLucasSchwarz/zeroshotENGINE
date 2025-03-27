@@ -2,15 +2,17 @@
 
 A open-source scientific zero-shot text classification engine based on various LLM models.
 
-### 📖 Description
+## 📖 About this package
+
+### Description
 
 This project provides a flexible framework for performing zero-shot classification using large language models and pandas. It allows you to classify text into categories without requiring explicit training data for those categories. All instructions to LLMs are provided by mere natural language prompts. The framework is designed to support a wide range of text classification tasks including multi-label, multi-class, and single-class classification scenarios.
 
-### 🎯 Purpose
+### Purpose
 
 This package was developed as part of an academic research project to systematically classify political communication. The primary goal was to create an easy-to-use and accessible framework for building adaptable zero-shot classifications with large language models (LLMs) across a wide variety of text analysis tasks. By providing a flexible and intuitive tool, this project aims to empower students and researchers — especially those in social sciences — to explore, evaluate, and harness the potential of zero-shot classification while addressing its challenges in a user-friendly environment. I have no financial interest in this project.
 
-### 🌍 Open-Source and Non-Commercial
+### Open-Source and Non-Commercial
 
 This project is fully open-source and was developed with no financial interests. It is intended to support academic research and the broader scientific community. Contributions are welcome to help improve the framework and expand its capabilities.
 
@@ -23,7 +25,7 @@ This project is fully open-source and was developed with no financial interests.
 *   Customizable prompts.
 *   Integration with pandas for data handling.
 
-### 💡 Key Concepts
+### Key Concepts
 
 *   **Zero-Shot Learning:** The ability of a model to make predictions on unseen classes or tasks without prior training on those specific classes or tasks. The system learns entirely through natural language instructions, eliminating the need for labeled examples or fine-tuning.
 *   **Sequential Classification:** A process where tasks are performed in a series of steps without strict dependencies (IDZSC approach).
@@ -83,7 +85,7 @@ For more detailed information about the framework and its implementation, please
 
 * **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
-## 📈 Example Flow Chart
+### Example Flow Chart
 ```
 
 
