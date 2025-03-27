@@ -44,7 +44,6 @@ from zeroshot_engine import (
     iterative_double_zeroshot_classification,
     set_zeroshot_parameters,
     get_demo_prompt_structure,
-    get_demo_stop_conditions,
     display_label_flowchart,
 )
 
@@ -214,10 +213,6 @@ Create a new Python script, `parallel_example.py`, in your project directory and
 import os
 import pandas as pd
 
-# Set environment variables (if you have CUDA and want to use a local LLM)
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-os.environ["OLLAMA_CUDA"] = "1"
-
 from zeroshot_engine import (
     initialize_model,
     parallel_iterative_double_zeroshot_classification,
@@ -225,6 +220,10 @@ from zeroshot_engine import (
     get_demo_prompt_structure,
     display_label_flowchart,
 )
+
+# Set environment variables (if you have CUDA and want to use a local LLM)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["OLLAMA_CUDA"] = "1"
 
 # Load the demo prompts (you can download the demo prompt table as xlsx under https://github.com/TheLucasSchwarz/zeroshotENGINE/blob/master/docs/prompt_structure.xlsx)
 prompts_df = get_demo_prompt_structure()
