@@ -34,8 +34,8 @@ This project is fully open-source and was developed with no financial interests.
 *   **Modular Prompt Design:** While not automated in the current implementation, the modular prompt design with text blocks facilitates manual testing and refinement of prompts to improve classification accuracy.
 
 ### Core Modules
-* Iterative Double Validated Zero-Shot Classification (IDZSC): IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
-* Hierarchical Double Validated Zero-Shot Classification (HDZSC): HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
+* **Iterative Double Validated Zero-Shot Classification (IDZSC)**: IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
+* **Hierarchical Double Validated Zero-Shot Classification (HDZSC)**: HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
 ## 🚀 Get Started
 Install the `zeroshot-engine` package using pip in your Windows Powershell or Linux / Mac Bash Terminal.
