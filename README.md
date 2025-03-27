@@ -44,6 +44,17 @@ This project is fully open-source and was developed with no financial interests.
 > 
 > Contributions are highly appreciated and will help improve the framework for the scientific community!
 
+
+<div style="border: 1px solid #f5c6cb; background-color: #f8d7da; padding: 10px; border-radius: 5px; color: #721c24;">
+<strong>Note:</strong> While the core functionality of <code>zeroshot-engine</code> is operational, this project is still under active development.  
+There may be bugs, incomplete features, or areas for improvement.  
+If you encounter any issues or have feature requests, please feel free to:  
+<ul>
+  <li>Open an issue on the <a href="https://github.com/your-repo-link/issues">GitHub repository</a>.</li>
+  <li>Contact the author directly at <strong>luc.schwarz@posteo.de</strong>.</li>
+</ul>
+</div>
+
 ## 🚀 Get Started
 
 ```bash
