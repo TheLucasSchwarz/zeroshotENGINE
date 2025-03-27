@@ -134,8 +134,7 @@ For more detailed information about the framework and its implementation, please
 *   Add contribution guidelines.
 *   Support for more LLMs and APIs.
 
-## 🚧 Notice: Under Development
-**Note:**  
+## 🚧 Notice: Under Development  
 While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
 There may be bugs, incomplete features, or areas for improvement.  
 
