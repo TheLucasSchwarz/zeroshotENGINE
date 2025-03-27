@@ -14,7 +14,7 @@ This package was developed as part of an academic research project to systematic
 
 ### Open-Source and Non-Commercial
 
-This project is fully open-source and was developed with no financial interests. It is intended to support academic research and the broader scientific community. Contributions are welcome to help improve the framework and expand its capabilities.
+This project is open-source and was developed with no financial interests. It is intended to support academic research and the broader scientific community. Contributions are welcome to help improve the framework and expand its capabilities.
 
 ## ✨ Features
 ### Overview
