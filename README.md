@@ -50,13 +50,13 @@ This project is fully open-source and was developed with no financial interests.
 pip install zeroshot-engine
 ```
 
-### 🖥️ Interactive Demo directly in your the command line
+### Interactive Demo directly in your the command line
 Test the zeroshotENGINE in the HDZSC-scenario by  from a wide variety of LLMs and bring your own text
 ```bash
 zeroshot-engine demo
 ```
 
-### ⚙️ Usage
+### Usage
 
 ```bash
 zeroshot-engine --help
@@ -133,7 +133,7 @@ For more detailed information about the framework and its implementation, please
 --------------------------------------------------------------
 ```
 
-### 📅 Planned Features
+## 📅 Planned Features
 
 *   List of supported LLMs
 *   Additional tutorial for double validation vs. zero-temp approach.
