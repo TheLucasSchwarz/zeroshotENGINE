@@ -29,9 +29,6 @@ import os
 import sys
 import time
 
-# Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
-
 # Set environment variables (if you have CUDA and want to use a local LLM)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["OLLAMA_CUDA"] = "1"
@@ -44,9 +41,10 @@ from zeroshot_engine import (
     get_demo_stop_conditions,
 )
 
-# Load the demo data
+# Load the demo prompts
 prompts_df = get_demo_prompt_structure()
 
+# Define all relevant columns from the demo prompts table
 prompt_blocks_columns = [
     "Block_A_Introduction",
     "Block_B_History",
@@ -58,8 +56,27 @@ prompt_blocks_columns = [
 
 labels = ["political", "presentation", "attack", "target"]
 
+# Define the corresponding row of the prompt table for each label
+label_prompt_ids = ["P1_political_naive", "P2_presentation_naive", "P3_attack_naive", "P4_target__naive"]
+
+# Define the possible values the labels can receive
 label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
 
+# Define the possible output_types each specific label can have
+output_type_labels = {
+        "political": "numeric",
+        "presentation": "numeric",
+        "attack": "numeric",
+        "target": "list",
+    } 
+
+# Define the mismatch strategy per output_type
+combining_strategy_output = {
+        "numeric": "optimistic",
+        "list": "union",
+    }
+
+# Get the stop condition from the demo project
 stop_condition = get_demo_stop_conditions()
 
 # Choose the model you want to use.
@@ -72,28 +89,15 @@ parameters = set_zeroshot_parameters(
     client=client,
     model="gemma2:2b",  # alternatively: gpt-4o-mini
     prompt_build=prompts_df,
-    prompt_ids_list=[
-        "P1_political_naive",
-        "P2_presentation_naive",
-        "P3_attack_naive",
-        "P4_target_naive",
-    ],
+    prompt_ids_list=label_prompt_ids,
     prompt_id_col="Prompt-ID",
     prompt_block_cols=prompt_blocks_columns,
     valid_keys=labels,
     label_codes=label_values,
     stop_conditions=stop_condition,
-    output_types={
-        "political": "numeric",
-        "presentation": "numeric",
-        "attack": "numeric",
-        "target": "list",
-    },
+    output_types=output_type_labels,
     validate=True,
-    combining_strategies={
-        "numeric": "optimistic",
-        "list": "union",
-    },
+    combining_strategies=combining_strategy_output,
     max_retries=2,
     feedback=True,
 )
@@ -163,9 +167,6 @@ import os
 import sys
 import pandas as pd
 
-# Add the project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
-
 # Set environment variables (if you have CUDA and want to use a local LLM)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["OLLAMA_CUDA"] = "1"
@@ -178,9 +179,10 @@ from zeroshot_engine import (
     get_demo_stop_conditions,
 )
 
-# Load the demo data
+# Load the demo promopts
 prompts_df = get_demo_prompt_structure()
 
+# Define all relevant columns from the demo prompts table
 prompt_blocks_columns = [
     "Block_A_Introduction",
     "Block_B_History",
@@ -190,10 +192,30 @@ prompt_blocks_columns = [
     "Block_F_Output",
 ]
 
+# Define all labels we want to classify
 labels = ["political", "presentation", "attack", "target"]
 
+# Define the corresponding row of the prompt table for each label
+label_prompt_ids = ["P1_political_with_definition", "P2_presentation_with_definition", "P3_attack_with_definition", "P4_target_with_definition"]
+
+# Define the possible values the labels can receive
 label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
 
+# Define the possible output_types each specific label can have
+output_type_labels = {
+        "political": "numeric",
+        "presentation": "numeric",
+        "attack": "numeric",
+        "target": "list",
+    } 
+
+# Define the mismatch strategy per output_type
+combining_strategy_output = {
+        "numeric": "optimistic",
+        "list": "union",
+    }
+
+# Get the stop condition from the demo project
 stop_condition = get_demo_stop_conditions()
 
 # Choose the model you want to use.
@@ -205,30 +227,17 @@ parameters = set_zeroshot_parameters(
     client=client,
     model="gpt-4o-mini",  # alternatively: gemma2:9b
     prompt_build=prompts_df,
-    prompt_ids_list=[
-        "P1_political_with_definition",
-        "P2_presentation_with_definition",
-        "P3_attack_with_definition",
-        "P4_target_with_definition",
-    ],
+    prompt_ids_list=label_prompt_ids,
     prompt_id_col="Prompt-ID",
     prompt_block_cols=prompt_blocks_columns,
     valid_keys=labels,
     label_codes=label_values,
     stop_conditions=stop_condition,
-    output_types={
-        "political": "numeric",
-        "presentation": "numeric",
-        "attack": "numeric",
-        "target": "list",
-    },
+    output_types=output_type_labels,
     validate=True,
-    combining_strategies={
-        "numeric": "conservative",
-        "list": "union",
-    },
+    combining_strategies=combining_strategy_output,
     max_retries=2,
-    feedback=False,
+    feedback=True,
 )
 
 # Create the example DataFrame (generated by an LLM, no actual posts.)
