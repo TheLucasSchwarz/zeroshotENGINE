@@ -38,6 +38,7 @@ This project is fully open-source and was developed with no financial interests.
 * **Hierarchical Double Validated Zero-Shot Classification (HDZSC)**: HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
 ## 🚀 Get Started
+### How to install
 Install the `zeroshot-engine` package using pip in your Windows Powershell or Linux / Mac Bash Terminal.
 ```bash
 pip install zeroshot-engine
@@ -54,7 +55,7 @@ This command will guide you through an interactive demo where you can:
 * Provide your own text for classification or use a provided example text.
 * Observe how the hierarchical classification process works in real-time.
 
-## 📚 Documentation
+### Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
 * **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
