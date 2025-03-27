@@ -47,22 +47,21 @@ This project is fully open-source and was developed with no financial interests.
 > Contributions are highly appreciated and will help improve the framework for the scientific community!
 
 ## 🚀 Get Started
-
+Install the `zeroshot-engine` package using pip in your Windows Powershell or Linux / Mac Bash Terminal.
 ```bash
 pip install zeroshot-engine
 ```
 
-### Interactive Demo directly in your the command line
-Test the zeroshotENGINE in the HDZSC-scenario by  from a wide variety of LLMs and bring your own text
+### Interactive Demo in the Command Line
+Test the `zeroshot-engine` in the HDZSC-scenario by selecting from a wide variety of LLMs and bringing your own text for classification:
 ```bash
 zeroshot-engine demo
 ```
+This command will guide you through an interactive demo where you can:
 
-### Usage
-
-```bash
-zeroshot-engine --help
-```
+* Choose an LLM model (e.g., one from OpenAI or Ollama).
+* Provide your own text for classification or use a provided example text.
+* Observe how the hierarchical classification process works in real-time.
 
 ## 🧩 Core Modules
 
@@ -74,7 +73,7 @@ IDZSC is the core module to classify texts in an iterative process. It can use a
 
 HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
-## 📚 Documentation - Get started
+## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
 * **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
