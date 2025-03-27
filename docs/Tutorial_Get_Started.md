@@ -11,18 +11,29 @@ We have two examples:
 
 ## Single-Text-Scenario
 
-### 1. Set Up the Environment
-Ensure you have the necessary dependencies installed. If you haven't already, create and activate a virtual environment, then install the required packages:
+### 1. Set Up a clean Python Environment
+Ensure you have the necessary dependencies installed and to prevent conflicts, install a fresh virtual environment. If you haven't already, create and activate a virtual environment, then install the required packages:
 
-```python
+```bash
+pip install virtualenv
+```
+
+#### On Linux/Mac
+```bash
 python3 -m venv test_venv
 source test_venv/bin/activate
 pip install zeroshot-engine
 ```
 
-### 2. Create the Tutorial Script
+#### On Windows
+```bash
+python3 -m venv test_venv
+test_venv\Scripts\activate
+pip install zeroshot-engine
+```
 
-Create a new Python script, `tutorial_example.py`, in your project directory:
+### 2. Create the Tutorial Script
+Create a new Python script, `tutorial_example.py`, in your project directory and copy the following code into it:
 
 ```python
 import os
@@ -141,7 +152,7 @@ print(result)
 ### 3. Run the Tutorial Script
 Run the script to see the output:
 
-```python
+```bash
 python tutorial_example.py
 ```
 
@@ -162,7 +173,7 @@ Here's a second subvariant that demonstrates how to process an entire DataFrame 
 
 ### 0. If not already done, set up the environment:
 
-```python
+```bash
 python3 -m venv test_venv
 source test_venv/bin/activate
 pip install zeroshot-engine
@@ -170,8 +181,7 @@ pip install zeroshot-engine
 
 
 ### 1. Create the Parallel Processing Script
-Create a new Python script, `parallel_example.py`, in your project directory:
-
+Create a new Python script, `parallel_example.py`, in your project directory and copy the following code into it:
 
 ```python
 import os
@@ -362,7 +372,7 @@ print(results_df[selected_columns].head(n=10))
 ### 2. Run the Parallel Processing Script
 Run the script to see the output:
 
-```python
+```bash
 python parallel_example.py
 ```
 ### Explanation
