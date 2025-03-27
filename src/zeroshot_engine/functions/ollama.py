@@ -1,5 +1,6 @@
 def check_ollama_gpu_support():
     """
+    Helper function for setup_ollama():
     Check if Ollama is using GPU acceleration across all operating systems.
 
     Returns:
@@ -201,6 +202,7 @@ def check_ollama_gpu_support():
 
 def check_ollama_installation():
     """
+    Helper function for setup_ollama():
     Checks if Ollama is installed and returns version information.
 
     Returns:
@@ -303,6 +305,7 @@ def check_system_requirements(model):
 
 def install_ollama(os_type):
     """
+    Helper function for setup_ollama():
     Installs Ollama based on the operating system.
 
     Args:
@@ -363,6 +366,7 @@ def install_ollama(os_type):
 
 def update_ollama(os_type):
     """
+    Helper function for setup_ollama():
     Updates Ollama based on the operating system.
 
     Args:
@@ -421,6 +425,7 @@ def update_ollama(os_type):
 
 def start_ollama_service(os_type):
     """
+    Helper function for setup_ollama():
     Starts the Ollama service based on the operating system.
 
     Args:
@@ -482,18 +487,19 @@ def start_ollama_service(os_type):
             # macOS and Linux code remains unchanged
             result = subprocess.run(["ollama", "serve"], capture_output=True, text=True)
             if "address already in use" in result.stderr:
-                print("Ollama service is already running.")
+                print("Ollama service is already running.\n")
             else:
-                print("Starting Ollama service...")
+                print("Starting Ollama service...\n")
                 time.sleep(2)  # Give it a moment to start
             return True
     except Exception as e:
-        print(f"Error with Ollama service: {e}")
+        print(f"Error with Ollama service: {e}\n")
         return False
 
 
 def test_model_compatibility(model):
     """
+    Helper function for setup_ollama():
     Tests if the model is compatible with the current Ollama version.
 
     Args:
@@ -526,6 +532,7 @@ def test_model_compatibility(model):
 
 def get_model_size_from_ollama(model):
     """
+    Helper function for setup_ollama():
     Get model size information from Ollama API.
 
     Args:
@@ -570,6 +577,7 @@ def get_model_size_from_ollama(model):
 
 def estimate_model_size(model):
     """
+    Helper function for setup_ollama():
     Estimate model size based on model name and known patterns.
 
     Args:
@@ -626,6 +634,7 @@ def estimate_model_size(model):
 
 def download_model_with_progress(model):
     """
+    Helper function for setup_ollama():
     Download a model using ollama with native progress display in terminal
     and minimal elapsed time display in notebooks.
 
@@ -724,6 +733,7 @@ much faster than the displayed progress suggests.</em></p>""")
 
 def check_ollama_updates():
     """
+    Helper function for setup_ollama():
     Checks if an Ollama update is available and prompts the user to update if needed.
 
     Returns:
@@ -732,7 +742,6 @@ def check_ollama_updates():
     import platform
     import re
     import subprocess
-
     import requests
     import semver
 
@@ -746,7 +755,7 @@ def check_ollama_updates():
             response = requests.get("http://localhost:11434/api/version", timeout=2)
             if response.status_code == 200:
                 current_version = response.json().get("version", "").lstrip("v")
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             # If API fails, try command line
             try:
                 if os_type == "Windows":
@@ -765,8 +774,7 @@ def check_ollama_updates():
                     current_version = result.stdout.strip().replace(
                         "ollama version ", ""
                     )
-            except:
-                print("Could not determine current Ollama version")
+            except Exception:
                 return False
 
         if not current_version:
@@ -781,17 +789,10 @@ def check_ollama_updates():
 
             # Compare versions
             if semver.compare(latest_version, current_version) > 0:
-                print(
-                    f"\n⚠️  UPDATE AVAILABLE: Ollama {latest_version} is now available (you have {current_version})"
-                )
-                print("📥 Download the latest version at: https://ollama.com/download")
-                return False
-            print(f"✓ Ollama is up to date (version {current_version})")
-            return True
-    except Exception as e:
-        print(f"Error checking for Ollama updates: {e}")
-
-    return False
+                return False  # Update available
+            return True  # Up to date
+    except Exception:
+        return False
 
 
 def setup_ollama(model):
@@ -804,9 +805,7 @@ def setup_ollama(model):
     Returns:
         bool: True if setup was successful, False otherwise
     """
-    import os
     import platform
-    import shutil
     import subprocess
 
     # Detect operating system
@@ -829,7 +828,12 @@ def setup_ollama(model):
             print("Ollama is required to use local models.")
             return False
     else:
-        print(f"Current Ollama version: {version}")
+        # Check for updates
+        if check_ollama_updates():
+            print(f"✓ Ollama is up to date (version {version})")
+        else:
+            print(f"⚠️  An update for Ollama is available. Current version: {version}")
+            print("📥 Download the latest version at: https://ollama.com/download")
 
     # Start Ollama service
     service_running = start_ollama_service(os_type)
@@ -837,7 +841,7 @@ def setup_ollama(model):
         print("Failed to start Ollama service.")
         return False
 
-    # Pull model if needed - we'll check compatibility during download
+    # Pull model if needed
     try:
         print(f"Checking if model '{model}' is available...")
         model_list = subprocess.run(
@@ -845,70 +849,11 @@ def setup_ollama(model):
         )
 
         if model not in model_list.stdout:
-            # Get model size information
-            model_size, is_local = get_model_size_from_ollama(model)
-
-            # Warn user about size and ask for permission
-            if is_local:
-                print(
-                    f"Model '{model}' is available locally and uses {model_size:.1f} GB of disk space."
-                )
-            else:
-                print(
-                    f"\n⚠️ The model '{model}' will require approximately {model_size:.1f} GB of disk space."
-                )
-                print(
-                    "Downloading may take several minutes depending on your internet connection."
-                )
-
-                # Check available disk space
-                target_path = (
-                    os.path.expanduser("~/.ollama/models")
-                    if os_type != "Windows"
-                    else os.path.expanduser("~")
-                )
-                if not os.path.exists(target_path) and os_type != "Windows":
-                    target_path = os.path.expanduser("~")
-
-                try:
-                    free_space = shutil.disk_usage(target_path).free / (
-                        1024 * 1024 * 1024
-                    )  # Convert to GB
-                    if free_space < model_size * 1.2:  # Add 20% buffer
-                        print(
-                            f"\n⚠️ WARNING: Low disk space! You have {free_space:.1f} GB free, but the model requires ~{model_size:.1f} GB."
-                        )
-                except Exception:
-                    # If we can't check disk space, just skip this warning
-                    pass
-
-                download_choice = input(f"Download '{model}' now? (yes/no): ").lower()
-
-                if download_choice in ("yes", "y"):
-                    # Use download function with progress display
-                    success = download_model_with_progress(model)
-                    if not success:
-                        # Check if it might be a compatibility issue and offer to update
-                        update_choice = input(
-                            "\n⚠️ Download failed. This could be a compatibility issue. Update Ollama? (yes/no): "
-                        ).lower()
-
-                        if update_choice in ("yes", "y"):
-                            success = update_ollama(os_type)
-                            if not success and os_type == "Windows":
-                                return False
-                            # Try downloading again
-                            success = download_model_with_progress(model)
-                            if not success:
-                                print("Failed to download model even after update.")
-                                return False
-                        else:
-                            print("Cannot continue without the model.")
-                            return False
-
-                else:
-                    print("Download cancelled.")
-                    return False
+            print(f"Model '{model}' is not available locally. Downloading...")
+            success = download_model_with_progress(model)
+            if not success:
+                print(f"Failed to download model '{model}'.")
+                return False
         else:
             print(f"Model '{model}' is already available.")
 

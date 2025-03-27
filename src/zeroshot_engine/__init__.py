@@ -1,7 +1,7 @@
 """zeroshot_engine package."""
 
 # Package version
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 # Package metadata
 __author__ = "Lucas Schwarz"
@@ -48,6 +48,9 @@ from zeroshot_engine.functions.ollama import (
     check_ollama_updates,
     setup_ollama,
 )
+
+from zeroshot_engine.demo.demo_runner import run_demo_classification
+
 
 from zeroshot_engine.functions.openai import setup_openai_api_key
 
