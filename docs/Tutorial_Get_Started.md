@@ -26,22 +26,22 @@ Create a new Python script, `tutorial_example.py`, in your project directory:
 
 ```python
 import os
-import sys
 import time
+
+from zeroshot_engine import (
+    initialize_model,
+    iterative_double_zeroshot_classification,
+    set_zeroshot_parameters,
+    get_demo_prompt_structure,
+    get_demo_stop_conditions,
+    display_label_flowchart,
+)
 
 # Set environment variables (if you have CUDA and want to use a local LLM)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["OLLAMA_CUDA"] = "1"
 
-from zeroshot_engine import initialize_model
-from zeroshot_engine import (
-    iterative_double_zeroshot_classification,
-    set_zeroshot_parameters,
-    get_demo_prompt_structure,
-    get_demo_stop_conditions,
-)
-
-# Load the demo prompts
+# Load the demo prompts (you can download the demo prompt table as xlsx under https://github.com/TheLucasSchwarz/zeroshotENGINE/blob/master/docs/prompt_structure.xlsx)
 prompts_df = get_demo_prompt_structure()
 
 # Define all relevant columns from the demo prompts table
@@ -58,27 +58,37 @@ prompt_blocks_columns = [
 labels = ["political", "presentation", "attack", "target"]
 
 # Define the corresponding row of the prompt table for each label
-label_prompt_ids = ["P1_political_naive", "P2_presentation_naive", "P3_attack_naive", "P4_target_naive"]
+label_prompt_ids = [
+    "P1_political_naive",
+    "P2_presentation_naive",
+    "P3_attack_naive",
+    "P4_target_naive",
+]
 
 # Define the possible values the labels can receive
 label_values = {"present": 1, "absent": 0, "non-coded": 8, "empty-list": []}
 
 # Define the possible output_types each specific label can have
 output_type_labels = {
-        "political": "numeric",
-        "presentation": "numeric",
-        "attack": "numeric",
-        "target": "list",
-    } 
+    "political": "numeric",
+    "presentation": "numeric",
+    "attack": "numeric",
+    "target": "list",
+}
 
 # Define the mismatch strategy per output_type
 combining_strategy_output = {
-        "numeric": "optimistic",
-        "list": "union",
-    }
+    "numeric": "optimistic",
+    "list": "union",
+}
 
 # Get the stop condition from the demo project
 stop_condition = get_demo_stop_conditions()
+
+# Display the defined hierarchical structure
+display_label_flowchart(
+    valid_keys=labels, stop_conditions=stop_condition, label_codes=label_values
+)
 
 # Choose the model you want to use.
 client = initialize_model("ollama", "gemma2:2b")
@@ -179,7 +189,7 @@ from zeroshot_engine import (
     display_label_flowchart,
 )
 
-# Load the demo promopts
+# Load the demo prompts (you can download the demo prompt table as xlsx under https://github.com/TheLucasSchwarz/zeroshotENGINE/blob/master/docs/prompt_structure.xlsx)
 prompts_df = get_demo_prompt_structure()
 
 # Define all relevant columns from the demo prompts table
@@ -347,7 +357,6 @@ results_df = parallel_iterative_double_zeroshot_classification(
 # The returned results_df will have all original columns plus classification results
 selected_columns = ["text"] + labels
 print(results_df[selected_columns].head(n=10))
-
 ```
 
 ### 2. Run the Parallel Processing Script
