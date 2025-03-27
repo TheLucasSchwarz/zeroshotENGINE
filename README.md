@@ -57,7 +57,7 @@ This command will guide you through an interactive demo where you can:
 
 ### Run your first Zeroshot Classification Project in Python
 
-This **[tutorial](docs/Tutorial_Get_Started.md)** provides example code for your first test project, which you can use as a template to build and adapt your own research projects. For more detailed information and advanced usage, please refer to the [documentation](Documentation).
+This **[tutorial](docs/Tutorial_Get_Started.md)** provides example code for your first test project, which you can use as a template to build and adapt your own research projects. For more detailed information and advanced usage, please refer to the [documentation](#📚-documentation).
 
 ## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
