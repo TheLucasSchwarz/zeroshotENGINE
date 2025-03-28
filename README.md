@@ -139,7 +139,7 @@ While the core functionality of `zeroshot-engine` is already up and running, thi
 There may be bugs, incomplete features, or areas for improvement.  
 
 If you encounter any issues, have feature requests, or would like to contribute code to the project, please feel free to:  
-* Open an issue on the [GitHub repository](https://github.com/your-repo-link/issues).  
+* Open an issue on the [GitHub repository](https://github.com/TheLucasSchwarz/zeroshotENGINE/issues).  
 * Submit a pull request with your contributions.  
 * Contact the author directly at **luc.schwarz@posteo.de**.  
 
