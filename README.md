@@ -6,7 +6,7 @@ A open-source scientific zero-shot text classification engine based on various L
 
 ### Description
 
-This project provides a flexible framework for performing zero-shot classification using large language models in Python with pandas. It allows you to classify text into categories without requiring explicit training data for those categories. All instructions to LLMs are provided by mere natural language prompts. The framework is designed to support a wide range of text classification tasks including multi-label, multi-class, and single-class classification scenarios.
+This project provides a flexible framework for performing zero-shot classification using large language models in Python. It allows you to classify text into categories without requiring explicit training data for those categories. All instructions to LLMs are provided by mere natural language prompts. The framework is designed to support a wide range of text classification tasks including multi-label, multi-class, and single-class classification scenarios.
 
 ### Purpose
 
