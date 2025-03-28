@@ -145,6 +145,11 @@ If you encounter any issues, have feature requests, or would like to contribute 
 
 Contributions are highly appreciated and will help improve the framework for the scientific community!
 
+##  Model Access and Orchestration
+Authorship and provision of Large Language Models (LLMs) reside entirely with their respective creators. zeroshot-engine claims no authorship over these models. It functions solely as an orchestrator, providing a structured framework to access models from providers like OpenAI (using the official openai Python library) or locally hosted Ollama instances (via the official LangChain Python library).
+
+Note: Utilizing Ollama requires it to be installed and running separately on your system. Internal data handling relies on pandas DataFrames, making it a core dependency (familiar if you work with Python for data analysis).
+
 ## 📜 License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
