@@ -18,11 +18,11 @@ This project is open-source and was developed with no financial interests. It is
 
 ## ✨ Features
 ### Overview
-*   Flexible prompt-driven zero-shot classification (with few-shot option).
-*   Supports diverse classification tasks: multi-label/class, sequential (IDZSC), and hierarchical (HDZSC).
-*   Integrates with multiple LLM providers (e.g., OpenAI, Ollama) and pandas DataFrames.
-*   Provides an easy-to-use command-line interface (CLI) for demonstrations.
-*   Open-source and non-commercial, designed for research and academic use.
+*   Flexible **prompt-driven zero-shot classification** (with few-shot option).
+*   Supports diverse classification tasks: **multi-label/class, sequential (IDZSC), and hierarchical (HDZSC)**.
+*   Integrates with multiple LLM providers (e.g., **OpenAI**, **Ollama**) and **pandas DataFrames**.
+*   Provides an easy-to-use **command-line interface (CLI)** for demonstration purpose.
+*   **Open-source** and non-commercial, designed for research and academic use.
 
 ### Key Concepts
 
