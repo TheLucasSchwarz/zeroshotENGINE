@@ -1,6 +1,6 @@
 # zeroshot-engine
 
-A open-source scientific zero-shot text classification python package based on various LLM models.
+A open-source scientific zero-shot text classification Python package based on various LLM models.
 
 ## 📖 About this package
 
