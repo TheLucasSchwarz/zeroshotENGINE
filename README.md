@@ -133,7 +133,7 @@ For more detailed information about the framework and its implementation, please
 *   Automated Logging System
 *   Add contribution guidelines.
 *   Support for more LLMs and APIs.
-*   Agent-based supervising behaviour in the double validation process, that a second series prompt could evaluate the first prompt or resolves conflicts in two prompts.
+*   Agent-based supervising behaviour in the double validation process, that a second series prompt could evaluate the first prompt or resolves conflicts in two prompts, or a thrid prompt with different model could evaluate the conflict if needed between the first identical prompts.
 
 ## 🚧 Notice: Under Development  
 While the core functionality of `zeroshot-engine` is already up and running, this project is still under active development.
