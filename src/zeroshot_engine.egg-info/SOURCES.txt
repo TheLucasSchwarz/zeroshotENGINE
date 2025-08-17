@@ -14,9 +14,10 @@ src/zeroshot_engine/demo/demo_runner.py
 src/zeroshot_engine/functions/__init__.py
 src/zeroshot_engine/functions/base.py
 src/zeroshot_engine/functions/evaluate.py
-src/zeroshot_engine/functions/idzsc.py
+src/zeroshot_engine/functions/izsc.py
 src/zeroshot_engine/functions/ollama.py
 src/zeroshot_engine/functions/openai.py
 src/zeroshot_engine/functions/utils.py
 src/zeroshot_engine/functions/validate.py
 src/zeroshot_engine/functions/visualization.py
+tests/test_flowchart.py

@@ -41,7 +41,7 @@ import time
 
 from zeroshot_engine import (
     initialize_model,
-    iterative_double_zeroshot_classification,
+    iterative_zeroshot_classification,
     set_zeroshot_parameters,
     get_demo_prompt_structure,
     display_label_flowchart,
@@ -131,6 +131,7 @@ parameters = set_zeroshot_parameters(
     label_codes=label_values,
     stop_conditions=stop_condition,
     output_types=output_type_labels,
+    double_shot=True,
     validate=True,
     combining_strategies=combining_strategy_output,
     max_retries=2,
@@ -143,7 +144,7 @@ text = "'Für uns ist klar: Staatsschulden sind eine Gefahr für die Wirtschafts
 # Perform classification
 start_time = time.time()  # Record start time
 
-result = iterative_double_zeroshot_classification(
+result = iterative_zeroshot_classification(
     text=text,
     parameter=parameters,
     context={
@@ -215,7 +216,7 @@ import pandas as pd
 
 from zeroshot_engine import (
     initialize_model,
-    parallel_iterative_double_zeroshot_classification,
+    parallel_iterative_zeroshot_classification,
     set_zeroshot_parameters,
     get_demo_prompt_structure,
     display_label_flowchart,
@@ -303,7 +304,8 @@ parameters = set_zeroshot_parameters(
     label_codes=label_values,
     stop_conditions=stop_condition,
     output_types=output_type_labels,
-    validate=True,
+    double_shot=False,
+    validate=False,
     combining_strategies=combining_strategy_output,
     max_retries=2,
     feedback=False,
@@ -377,7 +379,7 @@ df = pd.DataFrame(
 )
 
 # Process the entire DataFrame in parallel
-results_df = parallel_iterative_double_zeroshot_classification(
+results_df = parallel_iterative_zeroshot_classification(
     data=df,  # Pass the example DataFrame with text and context columns
     parameter=parameters,
     context=[

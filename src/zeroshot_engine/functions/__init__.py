@@ -17,7 +17,13 @@ __all__ = [
 
 try:
     from .base import initialize_model
-    from .idzsc import iterative_double_zeroshot_classification, set_zeroshot_parameters
+    from .izsc import (
+        set_zeroshot_parameters,
+        single_iterative_zeroshot_classification,
+        iterative_zeroshot_classification,
+        apply_iterative_zeroshot_classification,
+        parallel_iterative_zeroshot_classification,
+    )
     from .openai import setup_openai_api_key
     from .visualization import display_label_flowchart
     from .utils import (
