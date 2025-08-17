@@ -484,7 +484,6 @@ def iterative_zeroshot_classification(
     request_params["context"] = context
 
     if double_shot:
-        print("ich ich bin dort")
         prediction1 = single_iterative_zeroshot_classification(**request_params)
         prediction2 = single_iterative_zeroshot_classification(**request_params)
 
@@ -642,7 +641,6 @@ def iterative_zeroshot_classification(
             )
         return combined_prediction_series
     else:
-        print("hi ich bin hier")
         prediction = single_iterative_zeroshot_classification(**request_params)
         for key in valid_keys:
             if key not in prediction:
