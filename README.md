@@ -20,7 +20,7 @@ This project is open-source and was developed with no financial interests. It is
 ### Overview
 *   Flexible **prompt-driven zero-shot classification** (with few-shot option).
 *   Supports diverse classification tasks: **multi-label/class, sequential (IZSC), and hierarchical (HZSC)**.
-*   Option to perform *double shots**: Perform each step twice and evaluate the performance and uncertainty afterwards.
+*   Option to perform **double shots**: Perform each step twice and evaluate the performance and uncertainty afterwards.
 *   Integrates with multiple LLM providers (e.g., **OpenAI**, **Ollama**) and **pandas DataFrames**.
 *   Provides an easy-to-use **command-line interface (CLI)** for demonstration purpose.
 *   **Open-source** and non-commercial, designed for research and academic use.
