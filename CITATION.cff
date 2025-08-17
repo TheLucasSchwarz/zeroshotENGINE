@@ -1,9 +1,0 @@
-cff-version: 1.1.0
-message: "If you use this software, please cite it as below."
-authors:
-- family-names: Lucas
-  given-names: Schwarz
-orcid: https://orcid.org/0000-0001-6555-0255
-title:zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models.
-version: 0.1.4
-date-released: 2025-08-17
