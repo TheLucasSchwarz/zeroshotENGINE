@@ -28,12 +28,13 @@ def set_zeroshot_parameters(
     label_codes: dict[str, any] = None,
     stop_conditions: dict[int, dict[str, any]] = None,
     output_types: dict[str, str] = None,
+    double_shot: bool = False,
     combining_strategies: dict[str, str] = None,
+    validate: bool = False,
     max_retries: int = 1,
     feedback: bool = False,
     print_prompts: bool = False,
     debug: bool = False,
-    validate: bool = True,
 ) -> dict[str, any]:
     """
     Creates and validates parameter dictionary for iterative double zero-shot classification.
@@ -63,13 +64,14 @@ def set_zeroshot_parameters(
             Defaults to {}.
         output_types (dict[str, str], optional): Output type for each key ('numeric' or 'list').
             Defaults to all keys as 'numeric' except 'target' as 'list' if present.
+        double_shot (bool, optional): Execute each classification step twice and receive two predictions for each step. These two predictions can be combined and validated. Defaults to False.
         combining_strategies (dict[str, str], optional): Strategies for combining predictions.
             Defaults to {"numeric": "optimistic", "list": "intersection"}.
+        validate (bool, optional): Whether to validate and combine multiple predictions. Defaults to False.
         max_retries (int, optional): Maximum retries for failed classification steps. Defaults to 1.
         feedback (bool, optional): Whether to print classification progress. Defaults to False.
         print_prompts (bool, optional): Whether to print the generated prompts. Defaults to False.
         debug (bool, optional): Whether to print raw model responses. Defaults to False.
-        validate (bool, optional): Whether to validate and combine multiple predictions. Defaults to True.
 
     Returns:
         dict[str, any]: Complete parameter dictionary for classification.
@@ -170,6 +172,7 @@ def set_zeroshot_parameters(
     ...         "attack": "numeric",
     ...         "target": "list",
     ...     },
+
             validate=True,
     ...     combining_strategies={
     ...         "numeric": "optimistic",
@@ -249,6 +252,12 @@ def set_zeroshot_parameters(
     if combining_strategies is None:
         combining_strategies = {"numeric": "optimistic", "list": "union"}
 
+    if double_shot is None:
+        double_shot = False
+
+    if validate is None:
+        validate = False
+
     # Validate combining strategies
     valid_numeric_strategies = ["conservative", "optimistic", "probabilistic"]
     valid_list_strategies = ["union", "intersection", "first", "second"]
@@ -279,6 +288,7 @@ def set_zeroshot_parameters(
         "feedback": feedback,
         "print_prompts": print_prompts,
         "debug": debug,
+        "double_shot": double_shot,
         "validate": validate,
         "output_types": output_types,
         "combining_strategies": combining_strategies,
@@ -287,7 +297,7 @@ def set_zeroshot_parameters(
     return parameters
 
 
-def iterative_zeroshot_classification(
+def single_iterative_zeroshot_classification(
     prompt_build: pd.DataFrame,
     prompt_ids_list: list[str],
     prompt_id_col: str,
@@ -307,7 +317,7 @@ def iterative_zeroshot_classification(
     debug: bool = False,
 ) -> dict:
     """
-    Classifies a given text in multiple steps based on the provided parameters and returns the resulting classifications.
+    Classifies a single given text in multiple steps based on the provided parameters and returns the resulting classifications.
 
     Args:
         prompt_build (pd.DataFrame): The DataFrame containing the prompt parts.
@@ -408,21 +418,23 @@ def iterative_zeroshot_classification(
     return classifications
 
 
-def iterative_double_zeroshot_classification(
+def iterative_zeroshot_classification(
     parameter: dict,
     text: str,
     context: dict[str, any] = None,
-    validate: bool = True,
+    double_shot: bool = False,
+    validate: bool = None,
     strategy: str = None,
 ) -> pd.Series:
     """
-    Performs a double classification on the given text using an iterative zero-shot approach and optionally validates the results.
+    Performs a single or double classification on the given text using an iterative zero-shot approach and optionally validates the results.
 
     Args:
-        parameter (dict): dictionary of parameters for classification.
+        parameter (dict): dictionary of parameters for classification (see set_parameters function).
         text (str): The text to classify.
         context (Optional[dict[str, any]], optional): Additional context to include in the prompt. Defaults to None.
-        validate (bool, optional): Whether to validate the classification results. Defaults to True.
+        double_shot (bool, optional): Execute each classification step twice and receive two predictions for each step. These two predictions can be combined and validated. Defaults to False.
+        validate (bool, optional): Whether to validate the classification results. Defaults to False.
         strategy (Optional[str], optional): Strategy for validation ("conservative", "optimistic", or "probabilistic").
             Defaults to the value in parameter or "conservative".
 
@@ -431,6 +443,7 @@ def iterative_double_zeroshot_classification(
     """
     valid_keys = parameter["valid_keys"]
     validate = parameter["validate"]
+    double_shot = parameter["double_shot"]
 
     # Add a new parameter to specify output types
     output_types = parameter.get("output_types", {})
@@ -458,180 +471,191 @@ def iterative_double_zeroshot_classification(
     # Create a clean copy of parameters for the single classification
     request_params = {"text": text, **parameter}
 
-    # Remove parameters that iterative_zeroshot_classification doesn't accept
+    # Remove parameters that_single_iterative_zeroshot_classification doesn't accept
     request_params.pop("strategy", None)
     request_params.pop("validate", None)
     request_params.pop("output_types", None)
     request_params.pop("combining_strategies", None)
+    request_params.pop("double_shot", None)
+    request_params.pop("promptIdsList", None)
 
     if context is None:
         context = {}
     request_params["context"] = context
 
-    prediction1 = iterative_zeroshot_classification(**request_params)
-    prediction2 = iterative_zeroshot_classification(**request_params)
+    if double_shot:
+        prediction1 = single_iterative_zeroshot_classification(**request_params)
+        prediction2 = single_iterative_zeroshot_classification(**request_params)
 
-    for key in valid_keys:
-        if key not in prediction1:
-            prediction1[key] = None
-        if key not in prediction2:
-            prediction2[key] = None
-
-    prediction1_series = pd.Series(prediction1).rename(lambda x: f"{x}_pred1")
-    prediction2_series = pd.Series(prediction2).rename(lambda x: f"{x}_pred2")
-    combined_prediction_series = pd.concat([prediction1_series, prediction2_series])
-
-    valid_numeric_values = {
-        parameter["label_codes"]["present"],
-        parameter["label_codes"]["absent"],
-    }
-
-    if validate:
-        final_predictions = {}
-        chosen_methods = {}
-        validation_conflict = 0
-        combined_prediction_series.replace(
-            parameter["label_codes"]["non-coded"],
-            parameter["label_codes"]["absent"],
-            inplace=True,
-        )
-
-        # We check for every key, if the two predictions are identical
         for key in valid_keys:
-            raw_pred1 = combined_prediction_series[f"{key}_pred1"]
-            raw_pred2 = combined_prediction_series[f"{key}_pred2"]
+            if key not in prediction1:
+                prediction1[key] = None
+            if key not in prediction2:
+                prediction2[key] = None
 
-            if output_types[key] == "list":
-                # Handle list-based outputs
-                if isinstance(raw_pred1, list) and isinstance(raw_pred2, list):
-                    if combining_strategies["list"] == "union":
-                        # Combine unique items from both lists
-                        final_predictions[key] = list(set(raw_pred1 + raw_pred2))
-                        chosen_methods[key] = "union_lists"
-                    elif combining_strategies["list"] == "intersection":
-                        # Keep only items in both lists
-                        final_predictions[key] = list(set(raw_pred1) & set(raw_pred2))
-                        chosen_methods[key] = "intersection_lists"
-                    elif combining_strategies["list"] == "first":
+        prediction1_series = pd.Series(prediction1).rename(lambda x: f"{x}_pred1")
+        prediction2_series = pd.Series(prediction2).rename(lambda x: f"{x}_pred2")
+        combined_prediction_series = pd.concat([prediction1_series, prediction2_series])
+
+        valid_numeric_values = {
+            parameter["label_codes"]["present"],
+            parameter["label_codes"]["absent"],
+        }
+
+        if validate:
+            print("in validation")
+            final_predictions = {}
+            chosen_methods = {}
+            validation_conflict = 0
+            combined_prediction_series.replace(
+                parameter["label_codes"]["non-coded"],
+                parameter["label_codes"]["absent"],
+                inplace=True,
+            )
+
+            # We check for every key, if the two predictions are identical
+            for key in valid_keys:
+                raw_pred1 = combined_prediction_series[f"{key}_pred1"]
+                raw_pred2 = combined_prediction_series[f"{key}_pred2"]
+
+                if output_types[key] == "list":
+                    # Handle list-based outputs
+                    if isinstance(raw_pred1, list) and isinstance(raw_pred2, list):
+                        if combining_strategies["list"] == "union":
+                            # Combine unique items from both lists
+                            final_predictions[key] = list(set(raw_pred1 + raw_pred2))
+                            chosen_methods[key] = "union_lists"
+                        elif combining_strategies["list"] == "intersection":
+                            # Keep only items in both lists
+                            final_predictions[key] = list(set(raw_pred1) & set(raw_pred2))
+                            chosen_methods[key] = "intersection_lists"
+                        elif combining_strategies["list"] == "first":
+                            final_predictions[key] = raw_pred1
+                            chosen_methods[key] = "first_list"
+                        elif combining_strategies["list"] == "second":
+                            final_predictions[key] = raw_pred2
+                            chosen_methods[key] = "second_list"
+                        else:
+                            # Default to union
+                            final_predictions[key] = list(set(raw_pred1 + raw_pred2))
+                            chosen_methods[key] = "default_union_lists"
+                    elif isinstance(raw_pred1, list):
                         final_predictions[key] = raw_pred1
-                        chosen_methods[key] = "first_list"
-                    elif combining_strategies["list"] == "second":
+                        chosen_methods[key] = "only_first_list"
+                    elif isinstance(raw_pred2, list):
                         final_predictions[key] = raw_pred2
-                        chosen_methods[key] = "second_list"
+                        chosen_methods[key] = "only_second_list"
                     else:
-                        # Default to union
-                        final_predictions[key] = list(set(raw_pred1 + raw_pred2))
-                        chosen_methods[key] = "default_union_lists"
-                elif isinstance(raw_pred1, list):
-                    final_predictions[key] = raw_pred1
-                    chosen_methods[key] = "only_first_list"
-                elif isinstance(raw_pred2, list):
-                    final_predictions[key] = raw_pred2
-                    chosen_methods[key] = "only_second_list"
+                        final_predictions[key] = parameter["label_codes"]["empty-list"]
+                        chosen_methods[key] = "empty_list_default"
+
                 else:
-                    final_predictions[key] = parameter["label_codes"]["empty-list"]
-                    chosen_methods[key] = "empty_list_default"
+                    pred1 = (
+                        raw_pred1[0]
+                        if isinstance(raw_pred1, list) and raw_pred1
+                        else raw_pred1
+                    )
+                    pred2 = (
+                        raw_pred2[0]
+                        if isinstance(raw_pred2, list) and raw_pred2
+                        else raw_pred2
+                    )
 
-            else:
-                pred1 = (
-                    raw_pred1[0]
-                    if isinstance(raw_pred1, list) and raw_pred1
-                    else raw_pred1
-                )
-                pred2 = (
-                    raw_pred2[0]
-                    if isinstance(raw_pred2, list) and raw_pred2
-                    else raw_pred2
-                )
+                    if (
+                        pred1 == pred2
+                        and not isinstance(pred1, list)
+                        and not isinstance(pred2, list)
+                        and pred1 in valid_numeric_values
+                        and pred2 in valid_numeric_values
+                    ):
+                        final_predictions[key] = pred1
+                        chosen_methods[key] = "identical"
 
-                if (
-                    pred1 == pred2
-                    and not isinstance(pred1, list)
-                    and not isinstance(pred2, list)
-                    and pred1 in valid_numeric_values
-                    and pred2 in valid_numeric_values
-                ):
-                    final_predictions[key] = pred1
-                    chosen_methods[key] = "identical"
+                    # Second case: predictions differ but both are valid
+                    elif (
+                        pred1 != pred2
+                        and not isinstance(pred1, list)
+                        and not isinstance(pred2, list)
+                        and pred1 in valid_numeric_values
+                        and pred2 in valid_numeric_values
+                    ):
+                        validation_conflict = 1
+                        # Use the specific numeric strategy from combining_strategies
+                        numeric_strategy = combining_strategies["numeric"]
 
-                # Second case: predictions differ but both are valid
-                elif (
-                    pred1 != pred2
-                    and not isinstance(pred1, list)
-                    and not isinstance(pred2, list)
-                    and pred1 in valid_numeric_values
-                    and pred2 in valid_numeric_values
-                ):
-                    validation_conflict = 1
-                    # Use the specific numeric strategy from combining_strategies
-                    numeric_strategy = combining_strategies["numeric"]
+                        if numeric_strategy == "conservative":
+                            final_predictions[key] = parameter["label_codes"]["absent"]
+                            chosen_methods[key] = "conservative"
+                        elif numeric_strategy == "optimistic":
+                            final_predictions[key] = parameter["label_codes"]["present"]
+                            chosen_methods[key] = "optimistic"
+                        elif numeric_strategy == "probabilistic":
+                            final_predictions[key] = random.choice([pred1, pred2])
+                            chosen_methods[key] = "probabilistic"
+                        else:
+                            raise ValueError(f"Unknown strategy: {numeric_strategy}")
 
-                    if numeric_strategy == "conservative":
+                    # Third case: only pred1 is valid
+                    elif (
+                        not isinstance(pred1, list)
+                        and pred1 in valid_numeric_values
+                        and (isinstance(pred2, list) or pred2 not in valid_numeric_values)
+                    ):
+                        final_predictions[key] = pred1
+                        chosen_methods[key] = "pred1_only"
+
+                    # Fourth case: only pred2 is valid
+                    elif (
+                        (isinstance(pred1, list) or pred1 not in valid_numeric_values)
+                        and not isinstance(pred2, list)
+                        and pred2 in valid_numeric_values
+                    ):
+                        final_predictions[key] = pred2
+                        chosen_methods[key] = "pred2_only"
+
+                    # Default case: neither prediction is valid
+                    else:
                         final_predictions[key] = parameter["label_codes"]["absent"]
-                        chosen_methods[key] = "conservative"
-                    elif numeric_strategy == "optimistic":
-                        final_predictions[key] = parameter["label_codes"]["present"]
-                        chosen_methods[key] = "optimistic"
-                    elif numeric_strategy == "probabilistic":
-                        final_predictions[key] = random.choice([pred1, pred2])
-                        chosen_methods[key] = "probabilistic"
-                    else:
-                        raise ValueError(f"Unknown strategy: {numeric_strategy}")
+                        chosen_methods[key] = "default"
 
-                # Third case: only pred1 is valid
-                elif (
-                    not isinstance(pred1, list)
-                    and pred1 in valid_numeric_values
-                    and (isinstance(pred2, list) or pred2 not in valid_numeric_values)
-                ):
-                    final_predictions[key] = pred1
-                    chosen_methods[key] = "pred1_only"
+            for key, condition in stop_condition.items():
+                if final_predictions.get(key) == condition["condition"]:
+                    for blocked_key in condition["blocked_keys"]:
+                        final_predictions[blocked_key] = parameter["label_codes"]["absent"]
 
-                # Fourth case: only pred2 is valid
-                elif (
-                    (isinstance(pred1, list) or pred1 not in valid_numeric_values)
-                    and not isinstance(pred2, list)
-                    and pred2 in valid_numeric_values
-                ):
-                    final_predictions[key] = pred2
-                    chosen_methods[key] = "pred2_only"
+            final_predictions_series = pd.Series(final_predictions)
+            chosen_methods_series = pd.Series(chosen_methods).rename(
+                lambda x: f"{x}_method"
+            )
+            validation_conflict_series = pd.Series(
+                {"validation_conflict": validation_conflict}
+            )
 
-                # Default case: neither prediction is valid
-                else:
-                    final_predictions[key] = parameter["label_codes"]["absent"]
-                    chosen_methods[key] = "default"
+            return pd.concat(
+                [
+                    combined_prediction_series,
+                    final_predictions_series,
+                    chosen_methods_series,
+                    validation_conflict_series,
+                ]
+            )
+        return combined_prediction_series
+    else:
+        prediction = single_iterative_zeroshot_classification(**request_params)
+        for key in valid_keys:
+            if key not in prediction:
+                prediction[key] = None
 
-        for key, condition in stop_condition.items():
-            if final_predictions.get(key) == condition["condition"]:
-                for blocked_key in condition["blocked_keys"]:
-                    final_predictions[blocked_key] = parameter["label_codes"]["absent"]
-
-        final_predictions_series = pd.Series(final_predictions)
-        chosen_methods_series = pd.Series(chosen_methods).rename(
-            lambda x: f"{x}_method"
-        )
-        validation_conflict_series = pd.Series(
-            {"validation_conflict": validation_conflict}
-        )
-
-        return pd.concat(
-            [
-                combined_prediction_series,
-                final_predictions_series,
-                chosen_methods_series,
-                validation_conflict_series,
-            ]
-        )
+        combined_prediction_series = pd.Series(prediction)
     return combined_prediction_series
 
-
-def apply_iterative_double_zeroshot_classification(
+def apply_iterative_zeroshot_classification(
     data: pd.DataFrame,
     parameter: dict,
     context: list[str] = None,
 ) -> pd.DataFrame:
     """
-    Applies the double zero-shot classifier to each row of the input DataFrame.
+    Applies the iterative zero-shot classifier to each row of the input DataFrame.
 
     Args:
         data (pd.DataFrame): The input DataFrame containing the text and additional columns.
@@ -648,7 +672,7 @@ def apply_iterative_double_zeroshot_classification(
         context_dict = (
             {col: row[col] for col in context if col in row} if context else {}
         )
-        combined_prediction_series = iterative_double_zeroshot_classification(
+        combined_prediction_series = iterative_zeroshot_classification(
             parameter=parameter, text=text, context=context_dict
         )
         return pd.DataFrame([combined_prediction_series])
@@ -660,7 +684,7 @@ def apply_iterative_double_zeroshot_classification(
     )
 
 
-def parallel_iterative_double_zeroshot_classification(
+def parallel_iterative_zeroshot_classification(
     data: pd.DataFrame,
     parameter: dict,
     context: list[str] = None,
@@ -683,7 +707,7 @@ def parallel_iterative_double_zeroshot_classification(
     def apply_classifier_wrapper(
         data_chunk: pd.DataFrame, parameter: dict, context: list[str] = None
     ) -> pd.DataFrame:
-        return apply_iterative_double_zeroshot_classification(
+        return apply_iterative_zeroshot_classification(
             data_chunk, parameter, context
         )
 

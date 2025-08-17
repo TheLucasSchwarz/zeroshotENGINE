@@ -1,7 +1,7 @@
 # Understanding Iterative and Hierarchical Double Zero-Shot Classification in zeroshotENGINE
-This document provides an in-depth explanation of the Iterative Double Zero-Shot Classification (IDZSC) and Hierarchical Double Zero-Shot Classification (HDZSC) processes as implemented in the zeroshotENGINE, focusing on the iterative_double_zeroshot_classification function.
+This document provides an in-depth explanation of the Iterative Zero-Shot Classification (IZSC) and Hierarchical Zero-Shot Classification (HZSC) processes as implemented in the zeroshotENGINE, focusing on the iterative_zeroshot_classification function.
 
-## Overview of IDZSC and HDZSC
+## Overview of IZSC and HZSC
 Both IDZSC and HDZSC are classification approaches designed to leverage the power of large language models (LLMs) for complex classification tasks (multi-label, multi-class, single-class) without requiring task-specific training data. While IDZSC provides a robust foundation for sequential multi-step classification, HDZSC extends this framework by incorporating hierarchical relationships between categories to improve accuracy and efficiency.
 
 ## Theoretical Background
@@ -9,25 +9,25 @@ These zero-shot classification approaches were developed to address the challeng
 
 The underlying framework was initially developed in research on candidates' negative campaigning (Schwarz, 2025), with HDZSC specifically designed to handle hierarchical multi-label data structures where certain classifications depend on previous ones. Both approaches have already undergone promising evaluation and validation in academic research settings.
 
-IDZSC provides a flexible architecture for sequential classification tasks, while HDZSC adds the capability to model explicit dependencies between classification categories, allowing for more efficient and accurate analysis of complex hierarchical classification schemes.
+IZSC provides a flexible architecture for sequential classification tasks, while HZSC adds the capability to model explicit dependencies between classification categories, allowing for more efficient and accurate analysis of complex hierarchical classification schemes.
 
 ### Key Features and Methodology
 
 * **Step-by-Step Analysis**: Both IDZSC and HDZSC operate through a multi-prompt approach rather than relying on a single comprehensive prompt. Each prompt focuses on specific criteria for classification.
 
-* **Label Structure**: The system supports both sequential (IDZSC) and hierarchical (HDZSC) classification structures. HDZSC takes into account explicit dependencies between categories.Later classification steps may depend on the results of earlier ones. IDZSC allows for more general sequential multi-step classification.
+* **Label Structure**: The system supports both sequential (IZSC) and hierarchical (HZSC) classification structures. HZSC takes into account explicit dependencies between categories.Later classification steps may depend on the results of earlier ones. IZSC allows for more general sequential multi-step classification.
 
 * **Model Flexibility**: Any generative LLM can be integrated, whether self-hosted or accessed via an API.
 
-* **Sequential Processing**: Classification steps can be executed either sequentially (IDZSC) or following a hierarchical dependency structure (HDZSC). Both approaches are fully supported by the system.
+* **Sequential Processing**: Classification steps can be executed either sequentially (IZSC) or following a hierarchical dependency structure (HZSC). Both approaches are fully supported by the system.
 
 * **Customizable Prompt Building Blocks**: The system allows for prompt customization through building blocks, enabling easy iterative refinement to optimize performance for each category.
 
-* **Validation Options**: The system offers both deterministic (zero temperature) and probabilistic (double validation) approaches. Users can choose either method depending on their research requirements.
+* **Validation Options**: The system offers you to do every classification twice (double shot) leveraging the probabilistic power of LLMs. Alternatively, use the single shot with optional temperature control for determnistic findings. Users can choose either method depending on their research requirements.
 
 ### Validation Approaches
 
-Both IDZSC and HDZSC offer flexible validation strategies through temperature control when interacting with the language model:
+Both IZSC and HZSC offer flexible validation strategies through temperature control when interacting with the language model:
 
 * **Deterministic Validation (Zero Temperature):**
   * Setting temperature to 0 produces deterministic results from the language model
@@ -38,7 +38,7 @@ Both IDZSC and HDZSC offer flexible validation strategies through temperature co
   
 * **Probabilistic Validation (Non-Zero Temperature):**
   * Using default or higher temperature settings (e.g., 0.7) introduces controlled randomness
-  * This enables the "double validation" approach where the same text and prompt are processed twice
+  * This enables the "double shot validation" approach where the same text and prompt are processed twice
   * Consistency between the two responses indicates higher confidence in the classification
   * Differences between responses highlight uncertainty or ambiguity in the classification task
   
@@ -50,23 +50,23 @@ Both IDZSC and HDZSC offer flexible validation strategies through temperature co
       * Conservative strategy: Only accept classifications consistent across runs
       * Optimistic strategy: Accept a positive classification if it appears in any run
       * Probabilistic strategy: Randomly select between conflicting classifications
-      * Human verification: Flag inconsistent results for manual review (following Heseltine, 2024)
+      * Human verification: Flag inconsistent results for manual review (following Heseltine & Clemm v. Hohenburg, 2024)
 
-This dual approach to validation allows researchers to balance between deterministic reproducibility and capturing model uncertainty, making HDZSC adaptable to different research requirements and classification tasks.
+This dual approach to validation allows researchers to balance between deterministic reproducibility and capturing model uncertainty, making HZSC adaptable to different research requirements and classification tasks.
 
 
-## The `iterative_double_zeroshot_classification` Function
+## The `iterative_zeroshot_classification` Function
 
-This function is the core of the IDZSC and HDZSC implementation in `zeroshot_engine`. It takes a text input and a set of parameters to perform iterative zero-shot classification using a multi-prompting approach.
+This function is the core of the IZSC and HZSC implementation in `zeroshot_engine`. It takes a text input and a set of parameters to perform iterative zero-shot classification using a multi-prompting approach.
 
 ### Function Signature
 
 ```python
-iterative_double_zeroshot_classification(text, parameter, context)
+iterative__zeroshot_classification(text, parameter, context)
 ```
 
 ```python
-parallel_iterative_double_zeroshot_classification(text, parameter, context, num_workers)
+parallel_iterative_zeroshot_classification(text, parameter, context, num_workers)
 ```
 
 ### Parameters
@@ -84,6 +84,7 @@ parallel_iterative_double_zeroshot_classification(text, parameter, context, num_
     *   `label_codes` (dict): A dictionary mapping labels to numerical codes or other elements like strings or lists (e.g., `{"present": 1, "absent": 0}`).
     *   `stop_conditions` (dict): Conditions that determine when the iterative process should stop.
     *   `output_types` (dict): Specifies the expected output type for each label (e.g., `{"political": "numeric", "target": "list"}).
+    *   `double_shot` (bool): Execute each classification step twice and receive two predictions for each step. These two predictions can be combined and validated. Defaults to False.
     *   `validate` (bool): Whether to validate the output against the expected types.
     *   `combining_strategies` (dict): Strategies for combining multiple predictions (e.g., `{"numeric": "optimistic", "list": "union"}).
     *   `max_retries` (int): The maximum number of retries for generating a prediction.
@@ -94,7 +95,7 @@ parallel_iterative_double_zeroshot_classification(text, parameter, context, num_
 
 ### Inner workings
 
-The `iterative_double_zeroshot_classification` function orchestrates the following steps:
+The `iterative_zeroshot_classification` function orchestrates the following steps:
 
 1.  **Prompt Building:**
     *   The function uses the `prompt_build` DataFrame and the specified `prompt_ids_list` to construct prompts.

@@ -109,7 +109,7 @@ To use context variables, provide a context dictionary:
 
 ```python
 # When calling the classification function directly for a single text
-result = iterative_double_zeroshot_classification(
+result = iterative_zeroshot_classification(
     text="Sample text to analyze",
     parameter=parameters,
     context={
@@ -121,7 +121,7 @@ result = iterative_double_zeroshot_classification(
 )
 
 # Or when using with DataFrame apply
-apply_iterative_double_zeroshot_classification(
+apply_iterative_zeroshot_classification(
     data=df, # Contains texts-strings to classify in "text" column with context information in context columns (see below).
     parameter=parameters,
     context=["lang", "author", "platform", "date"]  # These column names from df will be used.
@@ -129,7 +129,7 @@ apply_iterative_double_zeroshot_classification(
 )
 
 # Or in parallelization for faster processing
-parallel_iterative_double_zeroshot_classification(
+parallel_iterative_zeroshot_classification(
     data=df, # Provide the texts-strings to classify in "text" column with context information in context columns (see below).
     parameter=parameters,
     context=["lang", "author", "platform", "date"],  # These column names from df will be used.
@@ -170,6 +170,7 @@ parameters = set_zeroshot_parameters(
         "attack": "numeric",
         "target": "list",
     },
+    double_shot=True,
     validate=True,
     combining_strategies={
         "numeric": "optimistic",
@@ -212,7 +213,7 @@ df = pd.DataFrame({
     "party": ["Green Party", "Democrats", "Republicans"]
 })
 
-# Full hierarchical example with all parameters and specialized settings
+# Full hierarchical example with all parameters and specialized settings, but with no double shot
 parameters = set_zeroshot_parameters(
     model_family="phi",
     client=client,
@@ -230,7 +231,8 @@ parameters = set_zeroshot_parameters(
         "attack": "numeric",
         "target": "list",
     },
-    validate=True,
+    double_shot=False,
+    validate=False,
     combining_strategies={
         "numeric": "optimistic",
         "list": "union",

@@ -1,19 +1,19 @@
 """zeroshot_engine package."""
 
 # Package version
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 # Package metadata
 __author__ = "Lucas Schwarz"
 __email__ = "luc.schwarz@posteo.de"
 
 # Import important functions for easy access
-from zeroshot_engine.functions.idzsc import (
+from zeroshot_engine.functions.izsc import (
     set_zeroshot_parameters,
-    iterative_double_zeroshot_classification,
+    single_iterative_zeroshot_classification,
     iterative_zeroshot_classification,
-    apply_iterative_double_zeroshot_classification,
-    parallel_iterative_double_zeroshot_classification,
+    apply_iterative_zeroshot_classification,
+    parallel_iterative_zeroshot_classification,
 )
 
 from zeroshot_engine.functions.base import (

@@ -4,9 +4,9 @@ import os
 import time
 
 # Use these imports (absolute imports are preferred in a package)
-from zeroshot_engine.functions.idzsc import (
-    iterative_double_zeroshot_classification,
+from zeroshot_engine.functions.izsc import (
     set_zeroshot_parameters,
+    iterative_zeroshot_classification,
 )
 
 from zeroshot_engine.functions.utils import (
@@ -59,6 +59,7 @@ def set_classification_parameters(
             "attack": "numeric",
             "target": "list",
         },
+        double_shot=True,
         validate=True,
         combining_strategies={
             "numeric": "optimistic",
@@ -100,6 +101,7 @@ def set_classification_parameters(
             "target": "list",
         },
         validate=True,
+        double_shot=True,
         combining_strategies={
             "numeric": "optimistic",
             "list": "union",
@@ -118,7 +120,7 @@ def run_classification(text, parameters, context, description):
     print(f"\n\n🧮 {description} started...")
     start_time = time.time()
 
-    result = iterative_double_zeroshot_classification(
+    result = iterative_zeroshot_classification(
         text=text,
         parameter=parameters,
         context=context,

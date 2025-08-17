@@ -19,7 +19,8 @@ This project is open-source and was developed with no financial interests. It is
 ## ✨ Features
 ### Overview
 *   Flexible **prompt-driven zero-shot classification** (with few-shot option).
-*   Supports diverse classification tasks: **multi-label/class, sequential (IDZSC), and hierarchical (HDZSC)**.
+*   Supports diverse classification tasks: **multi-label/class, sequential (IZSC), and hierarchical (HZSC)**.
+*   Option to perform **double shots**: Perform each step twice and evaluate the performance and uncertainty afterwards.
 *   Integrates with multiple LLM providers (e.g., **OpenAI**, **Ollama**) and **pandas DataFrames**.
 *   Provides an easy-to-use **command-line interface (CLI)** for demonstration purpose.
 *   **Open-source** and non-commercial, designed for research and academic use.
@@ -27,13 +28,13 @@ This project is open-source and was developed with no financial interests. It is
 ### Key Concepts
 
 *   **Zero-Shot Classification (via Prompting)**: The engine performs *Zero-Shot Classification* by instructing Large Language Models (LLMs) using user-defined natural language prompts. This allows classifying text into new categories without needing specific training examples for those categories; the LLM understands the task solely from the prompt provided through the engine.
-*   **Sequential Classification (IDZSC Approach):** The *Iterative Double Validated Zero-Shot Classification (IDZSC)* module enables *Sequential Classification*. Within this package, it means users can define a series of potentially independent classification steps executed in order. This allows building flexible, multi-stage analysis pipelines where each stage uses potentially different prompts or focuses on different aspects of the text, without requiring strict hierarchical dependencies between stages.
-*   **Hierarchical Classification (HDZSC Approach):** The *Hierarchical Double Validated Zero-Shot Classification (HDZSC)* module implements *Hierarchical Classification*. This allows users to structure classification tasks as a tree or hierarchy defined in the configuration. The package guides the LLM through this predefined structure, making classification decisions at one level contingent upon the outcomes of decisions at parent levels.
-*   **Multi-Prompting:** The framework supports a *Multi-Prompting* strategy by allowing users to define distinct prompts for each classification step (in IDZSC) or for different levels/branches within a hierarchy (in HDZSC). This flexibility enables tailoring LLM instructions specifically to the sub-task at hand, aiming for improved accuracy and nuance.
+*   **Sequential Classification (IZSC Approach):** The *Iterative Zero-Shot Classification (IZSC)* module enables *Sequential Classification*. Within this package, it means users can define a series of potentially independent classification steps executed in order. This allows building flexible, multi-stage analysis pipelines where each stage uses potentially different prompts or focuses on different aspects of the text, without requiring strict hierarchical dependencies between stages.
+*   **Hierarchical Classification (HZSC Approach):** The *Hierarchical Zero-Shot Classification (HZSC)* module implements *Hierarchical Classification*. This allows users to structure classification tasks as a tree or hierarchy defined in the configuration. The package guides the LLM through this predefined structure, making classification decisions at one level contingent upon the outcomes of decisions at parent levels.
+*   **Multi-Prompting:** The framework supports a *Multi-Prompting* strategy by allowing users to define distinct prompts for each classification step (in IZSC) or for different levels/branches within a hierarchy (in HZSC). This flexibility enables tailoring LLM instructions specifically to the sub-task at hand, aiming for improved accuracy and nuance.
 *   **Modular Prompt Design:** The package encourages *Modular Prompt Design*. Prompts can be constructed from reusable text blocks managed within the configuration. While not automated, this structure simplifies the user's process of experimenting with, testing, and refining different prompt components manually to optimize LLM performance.
 ### Core Modules
-* **Iterative Double Validated Zero-Shot Classification (IDZSC)**: IDZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
-* **Hierarchical Double Validated Zero-Shot Classification (HDZSC)**: HDZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
+* **Iterative Double Validated Zero-Shot Classification (IZSC)**: IZSC is the core module to classify texts in an iterative process. It can use a double validation technique to ensure the robustness and accuracy of the classifications.
+* **Hierarchical Double Validated Zero-Shot Classification (HZSC)**: HZSC extends the zero-shot classification capabilities to hierarchical category structures. It leverages a double validation approach to maintain accuracy while navigating the complexities of hierarchical classification.
 
 ## 🚀 Get Started
 ### How to install

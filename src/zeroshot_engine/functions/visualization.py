@@ -1,12 +1,113 @@
-def display_label_flowchart(valid_keys, stop_conditions, label_codes):
+def visualize_graphical_flowchart(valid_keys, stop_conditions, label_codes, output_file='flowchart.png'):
     """
-    Display a simplified flowchart of labels in ASCII tree format with enhanced formatting.
+    Create a universal graphical visualization of the flowchart using Graphviz.
 
     Args:
         valid_keys (list): List of keys to be included in the flowchart
         stop_conditions (dict): Dictionary defining when to stop traversing branches
         label_codes (dict): Dictionary mapping descriptors to coded values
+        output_file (str): Output filename for the image
     """
+    try:
+        import graphviz
+    except ImportError:
+        print("Graphviz not installed. Please run: pip install graphviz")
+        return
+
+    # Initialize a directed graph
+    dot = graphviz.Digraph(comment='Zeroshot Engine Label Flowchart')
+    dot.attr(rankdir='TB', size='8,11', dpi='300')
+    dot.attr('node', shape='box', style='filled', fillcolor='lightblue', fontname='Arial')
+
+    # Add title
+    dot.attr(label='ZEROSHOTENGINE LABEL DEPENDENCY FLOWCHART', fontsize='20', labelloc='t')
+
+    # Create nodes for all keys
+    node_ids = {}
+    for i, key in enumerate(valid_keys):
+        node_id = f"node_{i}"
+        node_ids[key] = node_id
+        dot.node(node_id, key.upper())
+
+    # Process dependencies and stop conditions
+    for i, key in enumerate(valid_keys):
+        # Check for stop conditions
+        if i in stop_conditions:
+            condition = stop_conditions[i]
+            if condition["condition"] == label_codes["absent"]:
+                # Create STOP node for this branch
+                stop_id = f"stop_{i}"
+                dot.node(stop_id, "STOP", shape='ellipse', style='filled', fillcolor='lightgray')
+
+                # Connect current node to STOP node for "absent" case
+                dot.edge(node_ids[key], stop_id, label=f"if {key} = {label_codes['absent']}", color='red')
+
+                # Add note about skipped keys
+                if "blocked_keys" in condition and condition["blocked_keys"]:
+                    skipped = ", ".join(condition["blocked_keys"])
+                    note_id = f"note_{i}"
+                    dot.node(note_id, f"Skip: {skipped}", shape='note', style='filled', fillcolor='lightyellow')
+                    dot.edge(node_ids[key], note_id, style='dashed', arrowhead='none', color='gray')
+
+        # Add logical dependencies
+        if i < len(valid_keys) - 1:
+            next_key = valid_keys[i + 1]
+            if next_key not in stop_conditions.get(i, {}).get("blocked_keys", []):
+                dot.edge(node_ids[key], node_ids[next_key], label=f"if {key} = {label_codes['present']}", color='blue')
+
+    # Handle parallel branches for independent labels
+    for i, key in enumerate(valid_keys):
+        if i in stop_conditions:
+            condition = stop_conditions[i]
+            if condition["condition"] == label_codes["absent"]:
+                # Parallel branches for independent labels
+                for blocked_key in condition["blocked_keys"]:
+                    if blocked_key in valid_keys and blocked_key in node_ids:  # Ensure blocked_key exists in valid_keys and node_ids
+                        dot.edge(node_ids[key], node_ids[blocked_key], label=f"if {key} = {label_codes['absent']}", color='blue')
+
+    # Add explanation notes for all stop conditions
+    with dot.subgraph(name='cluster_legend') as c:
+        c.attr(label='STOP CONDITIONS EXPLANATION', style='filled', color='lightgray')
+        c.attr('node', shape='plaintext', style='filled', fillcolor='white')
+
+        for idx, condition in stop_conditions.items():
+            if idx < len(valid_keys):
+                key_name = valid_keys[idx]
+                value_text = "absent" if condition["condition"] == 0 else "present"
+                if "blocked_keys" in condition and condition["blocked_keys"]:
+                    blocked_text = ", ".join(condition["blocked_keys"])
+                    legend_id = f"legend_{idx}"
+                    c.node(legend_id, f"If {key_name} = {condition['condition']} ({value_text}),\nskip: {blocked_text}")
+
+    # Render the graph to a file
+    try:
+        dot.render(output_file.split('.')[0], format=output_file.split('.')[-1], cleanup=True)
+        print(f"Flowchart saved as {output_file}")
+    except Exception as e:
+        print(f"Error rendering flowchart: {e}")
+        # Try to save as PDF if the requested format fails
+        try:
+            dot.render('flowchart', format='pdf', cleanup=True)
+            print("Flowchart saved as flowchart.pdf")
+        except:
+            print("Failed to save flowchart.")
+
+    return dot
+
+# Add graphical visualization option to your existing function
+def display_label_flowchart(valid_keys, stop_conditions, label_codes, graphical=False):
+    """
+    Display a flowchart of labels.
+
+    Args:
+        valid_keys (list): List of keys to be included in the flowchart
+        stop_conditions (dict): Dictionary defining when to stop traversing branches
+        label_codes (dict): Dictionary mapping descriptors to coded values
+        graphical (bool): Whether to generate a graphical output instead of ASCII
+    """
+    if graphical:
+        return visualize_graphical_flowchart(valid_keys, stop_conditions, label_codes)
+
     # Check if valid_keys is empty
     if not valid_keys:
         print("No valid keys provided.")
