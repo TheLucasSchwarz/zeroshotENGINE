@@ -45,10 +45,10 @@ Key features include:
 
 ### Installation
 
-You can install `zeroshot-engine` directly from the `pyproject.toml` in the root of this repository.
+You can install the latest version of the `zeroshot-engine` directly from pip.
 
 ```bash
-pip install .
+pip install zeroshot-engine
 ```
 
 This will install the package and all its dependencies listed in `pyproject.toml`.
