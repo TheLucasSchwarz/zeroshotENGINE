@@ -8,6 +8,8 @@ from .ollama import check_ollama_updates, setup_ollama, update_ollama
 
 from .openai import setup_openai_api_key
 
+from .openrouter import setup_openrouter_api_key
+
 
 # Function to get a specific prompt by Prompt-ID
 def get_prompt_id(
@@ -67,7 +69,7 @@ def initialize_model(api: str, model: str) -> any:
     Initializes the specified model based on the API.
 
     Args:
-        api (str): The API to use (e.g., "openai", "ollama").
+        api (str): The API to use (e.g., "openai", "ollama", "openrouter").
         model (str): The name of the model to initialize.
 
     Returns:
@@ -88,6 +90,20 @@ def initialize_model(api: str, model: str) -> any:
         setup_openai_api_key()
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         print(f"{model} connection set up successfully!")
+        return client
+
+    if api == "openrouter":
+        import os
+        from openai import OpenAI
+
+        setup_openrouter_api_key()
+        client = OpenAI(
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1"
+        )
+        print(f"{model} connection to OpenRouter (via OpenAI Client) set up successfully!")
+        # Cache the client
+        _LOADED_MODELS[cache_key] = client
         return client
 
     if api == "ollama":
@@ -169,7 +185,7 @@ def request_to_model(
 
     Args:
         model (str): The model to use for the request.
-        model_family (str): The family of the model (e.g., "openai", "llama").
+        model_family (str): The family of the model (e.g., "openai", "openrouter", "ollama_llm", "ollama_reasoning_llm").
         client (any): The client object to interact with the API.
         prompt (str): The prompt to send to the model.
         temperature (int, optional): The temperature to use for the model. Defaults to None.
@@ -178,7 +194,7 @@ def request_to_model(
     Returns:
         dict: A dictionary containing the model's response.
     """
-    if model_family == "openai":
+    if model_family in ["openai"]:
         response = client.chat.completions.create(
             model=model,
             messages=[
@@ -195,7 +211,31 @@ def request_to_model(
             print("=" * 80 + "\n")
         response_dict = json.loads(raw_response)
 
-    if model_family in ["llama", "phi", "gemma", "mistral", "qwen"]:
+    if model_family in ["openrouter"]:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
+            temperature=temperature,
+        )
+        raw_response = response.choices[0].message.content
+        if debug:
+            print("\n" + "=" * 80)
+            print("RAW MODEL RESPONSE:")
+            print("-" * 80)
+            print(raw_response)
+            print("=" * 80 + "\n")
+        pattern = r"\{(.*?)\}"
+        match = re.search(pattern, raw_response, re.DOTALL)
+        if match:
+            cleaned_response_dict_string = match.group(0)
+            response_dict = json.loads(cleaned_response_dict_string)
+        else:
+            response_no_dict = "no dict possible"
+            response_dict = json.loads(response_no_dict)
+
+    if model_family in ["ollama_llm"]:
         response = client.invoke(prompt)
         if debug:
             print("\n" + "=" * 80)
@@ -213,7 +253,7 @@ def request_to_model(
             response_no_dict = "no dict possible"
             response_dict = json.loads(response_no_dict)
 
-    if model_family == "deepseek":
+    if model_family == "ollama_reasoning_llm":
         response = client.invoke(prompt)
         if debug:
             print("\n" + "=" * 80)
