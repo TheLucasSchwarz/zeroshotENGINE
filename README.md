@@ -77,7 +77,7 @@ For more detailed information about the framework and its implementation, please
 
 * **[Performance Evaluation](docs/Performance_Evaluation.md)** - Benchmark results and performance metrics across different models and classification tasks.
 
-* **[In-Depth-Demo-Explanation](docs/HZSC_Demo_Showcase.md)** - Learn how the HZSC works in detail.
+* **[Prompting Explanation](docs/HZSC_Demo_Showcase.md)** - Learn how create the prompt table for the HZSC workflow.
 
 * **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
