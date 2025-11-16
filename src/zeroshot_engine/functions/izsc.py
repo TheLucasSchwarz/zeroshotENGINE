@@ -45,7 +45,11 @@ def set_zeroshot_parameters(
     and applies sensible defaults where appropriate.
 
     Args:
-        model_family (str, optional): The model family to use. Defaults to "openai".
+        model_family (str, optional): The family of the model. This determines how the response is handled.
+            - For OpenAI/OpenRouter: "openai", "openrouter", "custom".
+            - For standard Ollama models: "ollama_llm", "llama", "phi", "gemma", "mistral", "qwen".
+            - For Ollama reasoning models: "ollama_reasoning_llm", "deepseek".
+            Defaults to "openai".
         client (any, optional): The initialized client object for model interaction. Defaults to None.
         model (str, optional): The specific model to use. Defaults to "gpt-4o-mini".
         prompt_build (pd.DataFrame, optional): DataFrame containing the prompt components. Required.
@@ -159,7 +163,7 @@ def set_zeroshot_parameters(
     Examples:
     >>> # Full hierarchical example with all parameters and specialized settings
     >>> parameters = set_zeroshot_parameters(
-    ...     model_family="phi",
+    ...     model_family="ollama_llm",
     ...     client=client,
     ...     model="phi4:latest",
     ...     prompt_build=prompts_df,

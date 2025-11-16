@@ -115,15 +115,78 @@ print(result)
 *   **Ollama**: For running open-source models locally on your own machine (CPU or GPU).
 *   **OpenAI**: For accessing models like GPT-4o, GPT-4, and GPT-3.5-turbo. Requires an API key.
 *   **OpenRouter**: A service that provides access to a wide variety of models from different providers through a single API. Requires an API key.
+*   **Custom (OPENAI CLIENT COMPATIBLE)**: For accessing models like e.g. Gemini directly via Google AI Studio Endpoints from the OpenAI Python Client.
+
+### Finding and Using Supported Models
+
+To use a model with `zeroshot-engine`, you need to know its name and the API that provides it. Here’s how to find the models available for each supported service:
+
+#### Ollama Models
+Ollama supports a wide range of open-source models that you can run locally.
+
+*   **How to find models**: You can browse the full list of available models in the [Ollama Library](https://ollama.com/library).
+*   **How to use**:
+    1.  First, pull the model to your local machine using the Ollama CLI. For example, to download Gemma 2B, run:
+        ```bash
+        ollama pull gemma:2b
+        ```
+    2.  Then, use the model name in the `initialize_model` function:
+        ```python
+        client = initialize_model(api="ollama", model="gemma:2b")
+        ```
+
+#### OpenRouter Models
+OpenRouter provides access to a vast collection of models from different developers, including new and experimental ones.
+
+*   **How to find models**: The list of supported models is available on the [OpenRouter Models page](https://openrouter.ai/models).
+*   **How to use**:
+    1.  Find the "Model Name" on their page (e.g., `google/gemma-7b-it`).
+    2.  Use this name in the `initialize_model` function:
+        ```python
+        client = initialize_model(api="openrouter", model="google/gemma-7b-it")
+        ```
+
+#### OpenAI Models
+OpenAI offers its own state-of-the-art models.
+
+*   **How to find models**: The official list of models is available in the [OpenAI API documentation](https://platform.openai.com/docs/models).
+*   **How to use**:
+    1.  Choose a model ID from the documentation (e.g., `gpt-4o-mini`).
+    2.  Use this ID in the `initialize_model` function:
+        ```python
+        client = initialize_model(api="openai", model="gpt-4o-mini")
+        ```
+
+#### Custom Models
+OpenAI offers its own state-of-the-art models.
+
+*   **How to find models**: The official list of models from the correspondong providers documentation (e.g. Google Gemini AI Studio Documentation).
+*   **How to use**:
+    1.  Choose a model ID from the corresponding documentation (e.g., `gemini-2.5-flash`).
+    2.  Use this ID in the `initialize_model` function with the custom Base URL and the API Key Name (named by you):
+        ```python
+        initialize_model(api="custom", model="gemini-2.5-flash", base_url="https://generativelanguage.googleapis.com/v1beta/openai/", api_key_name="GEMINI_API_KEY")
+        ```
 
 ### Initializing a Model
 
-The `initialize_model` function is your entry point for setting up an LLM.
+The `initialize_model` function is your entry point for setting up an LLM. It handles API connections, key management, and returns a ready-to-use client.
 
-`initialize_model(api: str, model: str) -> any`
+`initialize_model(api: str, model: str, base_url: str = None, api_key_name: str = None) -> any`
 
-*   **`api` (str)**: The API to use. Can be `"ollama"`, `"openai"`, or `"openrouter"`.
-*   **`model` (str)**: The name of the model to use.
+*   **`api` (str)**: The API to use. Can be `"ollama"`, `"openai"`, `"openrouter"`, or `"custom"`.
+*   **`model` (str)**: The name of the model to use (e.g., `"gemma:2b"`, `"gpt-4o-mini"`, `"google/gemma-7b-it"`).
+*   **`base_url` (str, optional)**: A custom base URL for the API. This is used to override the default for `"openrouter"` or is **required** for `"custom"`.
+*   **`api_key_name` (str, optional)**: The name of the environment variable holding your API key (e.g., `"GEMINI_API_KEY"`). This is specifically for use with `api="custom"`.
+
+#### Using a Custom OpenAI-Compatible API
+The `api="custom"` option provides the flexibility to connect to any API that is compatible with OpenAI's client. This is useful for services like Google's Gemini, or other self-hosted or private models.
+
+To use it, you must provide:
+1.  `base_url`: The root URL of the custom API.
+2.  `api_key_name`: The name of the environment variable where your API key is stored (e.g., `"GEMINI_API_KEY"`).
+
+If the specified API key is not found in your environment or `.env` file, the package will securely prompt you to enter it for the session or save it for future use.
 
 **Examples:**
 
@@ -136,9 +199,25 @@ ollama_client = initialize_model(api="ollama", model="gemma:2b")
 # Requires OPENAI_API_KEY to be set as an environment variable
 openai_client = initialize_model(api="openai", model="gpt-4o-mini")
 
-# Initialize a model via OpenRouter
+# Initialize a model via OpenRouter using its default URL
 # Requires OPENROUTER_API_KEY to be set as an environment variable
 openrouter_client = initialize_model(api="openrouter", model="google/gemma-7b-it")
+
+# Initialize a model via OpenRouter with a custom base URL (e.g., for a proxy)
+custom_router_client = initialize_model(
+    api="openrouter", 
+    model="google/gemma-7b-it", 
+    base_url="https://my-custom-proxy.com/api/v1"
+)
+
+# Initialize a model using a completely custom OpenAI-compatible API (e.g., Gemini)
+# This will prompt for the "GEMINI_API_KEY" if it's not found in the environment.
+gemini_client = initialize_model(
+    api="custom",
+    model="gemini-2.5-flash", # The model name as expected by the custom API
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/", # Example URL for the custom API
+    api_key_name="GEMINI_API_KEY" # The environment variable to look for
+)
 ```
 
 ---
@@ -191,14 +270,17 @@ initialize_model(
 
 | Argument | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `api` | `str` | (required) | The API provider to use. Supported values are `"ollama"`, `"openai"`, and `"openrouter"`. |
+| `api` | `str` | (required) | The API provider to use. Supported values are `"ollama"`, `"openai"`, `"openrouter"`, and `"custom"`. |
 | `model` | `str` | (required) | The name of the model to initialize. This should be a valid model name for the specified API (e.g., `"gemma:2b"` for Ollama, `"gpt-4o-mini"` for OpenAI). |
+| `base_url` | `str` | `None` | A custom base URL for API requests. If provided with `api="openrouter"`, it overrides the default OpenRouter URL. It is **required** for `api="custom"`. |
+| `api_key_name` | `str` | `None` | The name of the environment variable for your custom API key (e.g., `"GEMINI_API_KEY"`). Used when `api="custom"`. |
 
 **Details**
 
 *   **Ollama (`api="ollama"`)**: This will check for a local Ollama installation. If Ollama is not running or the specified model is not available, it will trigger the interactive `setup_ollama` process to guide the user through installation and model download. It returns a `langchain_ollama.OllamaLLM` client.
 *   **OpenAI (`api="openai"`)**: This will initialize the official OpenAI client. It requires the `OPENAI_API_KEY` to be available as an environment variable. The `setup_openai_api_key` helper will be used to configure this.
-*   **OpenRouter (`api="openrouter"`)**: This initializes an OpenAI-compatible client configured to use the OpenRouter API endpoint. It requires the `OPENROUTER_API_KEY` to be available as an environment variable. The `setup_openrouter_api_key` helper will be used for configuration.
+*   **OpenRouter (`api="openrouter"`)**: This initializes an OpenAI-compatible client configured to use the OpenRouter API. It defaults to `https://openrouter.ai/api/v1`, but you can override this with the `base_url` parameter. It requires the `OPENROUTER_API_KEY` to be available as an environment variable.
+*   **Custom (`api="custom"`)**: This allows you to connect to any OpenAI-compatible API endpoint. You **must** provide the `base_url`. You can also provide an `api_key_name` to specify which environment variable holds your API key. If `api_key_name` is not provided, it defaults to `"CUSTOM_API_KEY"`. The `setup_custom_api_key` helper will be used to configure it.
 
 The function caches initialized model clients to avoid re-initializing the same model multiple times within a session, which can save time and resources.
 
@@ -244,7 +326,7 @@ set_zeroshot_parameters(
 
 | Argument | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `model_family` | `str` | `"openai"` | The family of the model being used (e.g., `"openai"`, `"openrouter"`, `"ollama_llm"`). This helps in routing the request to the correct model handler. |
+| `model_family` | `str` | `"openai"` | The family of the model being used. This determines how the model's response is processed. Supported families include: <br> - `"openai"`, `"openrouter"`, `"custom"` for standard API-based models. <br> - `"ollama_llm"` (Legacy Implementation: `"llama"`, `"phi"`, `"gemma"`, `"mistral"`, `"qwen"`) for standard Ollama models. <br> - `"ollama_reasoning_llm"` (Legacy Implementation: `"deepseek"`) for Ollama models that use a reasoning/thought process before outputting the final JSON. |
 | `client` | `any` | `None` | The initialized model client object returned by `initialize_model`. **Required**. |
 | `model` | `str` | `"gpt-4o-mini"` | The specific name of the model to use for classification (e.g., `"gpt-4o-mini"`, `"google/gemma-7b-it"`, `"gemma:2b"`). |
 | `prompt_build` | `pd.DataFrame` | `None` | A DataFrame containing the components of the prompts. Each row represents a prompt template, and columns contain different blocks of text. **Required**. |

@@ -13,6 +13,7 @@ src/zeroshot_engine/demo/__init__.py
 src/zeroshot_engine/demo/demo_runner.py
 src/zeroshot_engine/functions/__init__.py
 src/zeroshot_engine/functions/base.py
+src/zeroshot_engine/functions/custom.py
 src/zeroshot_engine/functions/evaluate.py
 src/zeroshot_engine/functions/izsc.py
 src/zeroshot_engine/functions/ollama.py
