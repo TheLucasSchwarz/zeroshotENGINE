@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: zeroshot-engine
-Version: 0.1.4
+Version: 0.2.0
 Summary: A zero-shot classification engine based on various LLM models
 Author-email: Lucas Schwarz <luc.schwarz@posteo.de>
 License: 
@@ -284,7 +284,7 @@ zeroshot-engine.exe demo
 ```
 This command will guide you through an interactive demo where you can:
 
-* Choose an LLM model (e.g., one from OpenAI or Ollama).
+* Choose an LLM model (e.g., one from OpenAI (with Routing Options to e.g. OpenRouter via Base-URL) or Ollama).
 * Provide your own text for classification or use a provided example text.
 * Observe how the hierarchical classification process works in real-time.
 
@@ -295,11 +295,11 @@ This **[tutorial](docs/Tutorial_Get_Started.md)** provides example code for your
 ## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
 
-* **[Overview of IDZSC and HDZSC](docs/Overview_IDZSC_and_HDZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
+* **[Overview of IZSC and HZSC](docs/Overview_IZSC_and_HZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
 
 * **[Performance Evaluation](docs/Performance_Evaluation.md)** - Benchmark results and performance metrics across different models and classification tasks.
 
-* **[In-Depth-Demo-Explanation](docs/HDZSC_Demo_Showcase.md)** - Learn how the HDZSC works in detail.
+* **[In-Depth-Demo-Explanation](docs/HZSC_Demo_Showcase.md)** - Learn how the HZSC works in detail.
 
 * **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
@@ -399,16 +399,16 @@ luc.schwarz@posteo.de
 
 If you use `zeroshot-engine` in your research, please cite it as follows:
 
-> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.1.3) [Computer software]. https://doi.org/10.5281/zenodo.15079109
+> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.1.5) [Computer software]. https://doi.org/10.5281/zenodo.16890143
 
 ```bibtex
 @software{Schwarz_zeroshot-engine_A_scientific_2025,
         author = {Schwarz, Lucas},
-        doi = {10.5281/zenodo.15079109},
+        doi = {10.5281/zenodo.16890143},
         month = mar,
         title = {{zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models}},
         url = {https://github.com/TheLucasSchwarz/zeroshotENGINE},
-        version = {0.1.3},
+        version = {0.2.0},
         year = {2025}
 }
 ```

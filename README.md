@@ -20,8 +20,12 @@ This project is open-source and was developed with no financial interests. It is
 ### Overview
 *   Flexible **prompt-driven zero-shot classification** (with few-shot option).
 *   Supports diverse classification tasks: **multi-label/class, sequential (IZSC), and hierarchical (HZSC)**.
+*   **Multi-API Support**: Seamlessly switch between APIs like OpenAI, OpenRouter, and local models via Ollama.
+*   **Parallel Processing**: Classify large pandas DataFrames in parallel to speed up your workflow.
+*   **Prompt Templating**: Easily build and manage complex prompts from a structured format.
+*   **Validation and Retries**: Improve reliability with built-in validation for dual-prediction setups and automatic retries.
 *   Option to perform **double shots**: Perform each step twice and evaluate the performance and uncertainty afterwards.
-*   Integrates with multiple LLM providers (e.g., **OpenAI**, **Ollama**) and **pandas DataFrames**.
+*   Integrates with multiple LLM providers (e.g., **OpenAI**, **Ollama**, **OpenRouter**) and **pandas DataFrames**.
 *   Provides an easy-to-use **command-line interface (CLI)** for demonstration purpose.
 *   **Open-source** and non-commercial, designed for research and academic use.
 
@@ -56,7 +60,7 @@ zeroshot-engine.exe demo
 ```
 This command will guide you through an interactive demo where you can:
 
-* Choose an LLM model (e.g., one from OpenAI or Ollama).
+* Choose an LLM model (e.g., one from OpenAI (with Routing Options to e.g. OpenRouter via Base-URL) or Ollama).
 * Provide your own text for classification or use a provided example text.
 * Observe how the hierarchical classification process works in real-time.
 
@@ -66,6 +70,8 @@ This **[tutorial](docs/Tutorial_Get_Started.md)** provides example code for your
 
 ## 📚 Documentation
 For more detailed information about the framework and its implementation, please refer to the following documentation:
+
+* **[Full Documentation](docs/zeroshot_engine_full_documentation.md)** - The complete documentation for the `zeroshot-engine` package, including detailed explanations of all functions, parameters, and core concepts.
 
 * **[Overview of IZSC and HZSC](docs/Overview_IZSC_and_HZSC.md)** - A comprehensive explanation of the Iterative and Hierarchical Double Zero-Shot Classification approaches, including detailed examples and usage patterns.
 
@@ -127,7 +133,6 @@ For more detailed information about the framework and its implementation, please
 
 *   List of supported LLMs
 *   Additional tutorial for double validation vs. zero-temp approach.
-*   Documentation of all relevant functions.
 *   Create prompting guidelines.
 *   Better integration and testing of validation metrics.
 *   Automated Logging System
@@ -180,7 +185,7 @@ If you use `zeroshot-engine` in your research, please cite it as follows:
         month = mar,
         title = {{zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models}},
         url = {https://github.com/TheLucasSchwarz/zeroshotENGINE},
-        version = {0.1.5},
+        version = {0.2.0},
         year = {2025}
 }
 ```
