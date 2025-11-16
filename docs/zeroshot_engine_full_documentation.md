@@ -158,7 +158,7 @@ OpenAI offers its own state-of-the-art models.
         ```
 
 #### Custom Models
-OpenAI offers its own state-of-the-art models.
+OpenAI Client allows users to use apis from many providers like Google API Studio or the above mentioned OpenRouter. You can simply add the correspsonding base_url and connect to these services via the Open AI Python Client. 
 
 *   **How to find models**: The official list of models from the correspondong providers documentation (e.g. Google Gemini AI Studio Documentation).
 *   **How to use**:
