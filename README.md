@@ -20,7 +20,7 @@ This project is open-source and was developed with no financial interests. It is
 ### Overview
 *   Flexible **prompt-driven zero-shot classification** (with few-shot option).
 *   Supports diverse classification tasks: **multi-label/class, sequential (IZSC), and hierarchical (HZSC)**.
-*   **Multi-API Support**: Seamlessly switch between APIs like OpenAI, OpenRouter, and local models via Ollama.
+*   **Multi-API Support**: Seamlessly switch between APIs like OpenAI, OpenRouter, and local models via Ollama or connect to any OpenAI-compatible API (e.g. Google Gemini API) using custom base URLs.
 *   **Parallel Processing**: Classify large pandas DataFrames in parallel to speed up your workflow.
 *   **Prompt Templating**: Easily build and manage complex prompts from a structured format.
 *   **Validation and Retries**: Improve reliability with built-in validation for dual-prediction setups and automatic retries.

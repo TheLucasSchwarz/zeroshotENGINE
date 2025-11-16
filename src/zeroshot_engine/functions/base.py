@@ -4,10 +4,9 @@ import re
 
 import pandas as pd
 
+from .custom import setup_custom_api_key
 from .ollama import check_ollama_updates, setup_ollama, update_ollama
-
 from .openai import setup_openai_api_key
-
 from .openrouter import setup_openrouter_api_key
 
 
@@ -64,18 +63,22 @@ def generate_prompt(
 _LOADED_MODELS = {}
 
 
-def initialize_model(api: str, model: str) -> any:
+def initialize_model(api: str, model: str, base_url: str = None, api_key_name: str = None) -> any:
     """
     Initializes the specified model based on the API.
 
     Args:
-        api (str): The API to use (e.g., "openai", "ollama", "openrouter").
+        api (str): The API to use (e.g., "openai", "ollama", "openrouter", "custom").
         model (str): The name of the model to initialize.
+        base_url (str, optional): A custom base URL for API requests.
+                                Defaults to None. Used by "openrouter" and "custom" APIs.
+        api_key_name (str, optional): The name of the environment variable for the API key.
+                                      Used by the "custom" API.
 
     Returns:
         any: The initialized model client.
     """
-    cache_key = f"{api}:{model}"
+    cache_key = f"{api}:{model}:{base_url}:{api_key_name}"
 
     # Check if model is already loaded and cached
     if cache_key in _LOADED_MODELS:
@@ -97,11 +100,37 @@ def initialize_model(api: str, model: str) -> any:
         from openai import OpenAI
 
         setup_openrouter_api_key()
+
+        # Use the provided base_url or default to OpenRouter's URL
+        final_base_url = base_url if base_url else "https://openrouter.ai/api/v1"
+
         client = OpenAI(
             api_key=os.getenv("OPENROUTER_API_KEY"),
-            base_url="https://openrouter.ai/api/v1"
+            base_url=final_base_url
         )
         print(f"{model} connection to OpenRouter (via OpenAI Client) set up successfully!")
+        # Cache the client
+        _LOADED_MODELS[cache_key] = client
+        return client
+
+    if api == "custom":
+        import os
+        from openai import OpenAI
+
+        if not api_key_name:
+            api_key_name = "CUSTOM_API_KEY"
+
+        setup_custom_api_key(api_key_name)
+        api_key = os.getenv(api_key_name)
+
+        if not base_url:
+            raise ValueError("A 'base_url' must be provided for the 'custom' API.")
+
+        client = OpenAI(
+            api_key=api_key,
+            base_url=base_url
+        )
+        print(f"{model} connection to custom API at {base_url} set up successfully!")
         # Cache the client
         _LOADED_MODELS[cache_key] = client
         return client
@@ -185,7 +214,10 @@ def request_to_model(
 
     Args:
         model (str): The model to use for the request.
-        model_family (str): The family of the model (e.g., "openai", "openrouter", "ollama_llm", "ollama_reasoning_llm").
+        model_family (str): The family of the model. This determines how the response is handled.
+                            - For OpenAI/OpenRouter: "openai", "openrouter", "custom".
+                            - For standard Ollama models: "ollama_llm", "llama", "phi", "gemma", "mistral", "qwen".
+                            - For Ollama reasoning models: "ollama_reasoning_llm", "deepseek".
         client (any): The client object to interact with the API.
         prompt (str): The prompt to send to the model.
         temperature (int, optional): The temperature to use for the model. Defaults to None.
@@ -211,7 +243,7 @@ def request_to_model(
             print("=" * 80 + "\n")
         response_dict = json.loads(raw_response)
 
-    if model_family in ["openrouter"]:
+    if model_family in ["openrouter", "custom"]:
         response = client.chat.completions.create(
             model=model,
             messages=[
@@ -235,7 +267,7 @@ def request_to_model(
             response_no_dict = "no dict possible"
             response_dict = json.loads(response_no_dict)
 
-    if model_family in ["ollama_llm"]:
+    if model_family in ["ollama_llm", "llama", "phi", "gemma", "mistral", "qwen"]:
         response = client.invoke(prompt)
         if debug:
             print("\n" + "=" * 80)
@@ -253,7 +285,7 @@ def request_to_model(
             response_no_dict = "no dict possible"
             response_dict = json.loads(response_no_dict)
 
-    if model_family == "ollama_reasoning_llm":
+    if model_family in ["ollama_reasoning_llm", "deepseek"]:
         response = client.invoke(prompt)
         if debug:
             print("\n" + "=" * 80)
