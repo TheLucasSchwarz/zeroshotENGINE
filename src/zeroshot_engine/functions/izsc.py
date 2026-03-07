@@ -36,6 +36,9 @@ def set_zeroshot_parameters(
     print_prompts: bool = False,
     debug: bool = False,
     temperature: float = None,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True
 ) -> dict[str, any]:
     """
     Creates and validates parameter dictionary for iterative double zero-shot classification.
@@ -77,8 +80,10 @@ def set_zeroshot_parameters(
         feedback (bool, optional): Whether to print classification progress. Defaults to False.
         print_prompts (bool, optional): Whether to print the generated prompts. Defaults to False.
         debug (bool, optional): Whether to print raw model responses. Defaults to False.
-        temperature (float, optional): Temperature parameter for model sampling. When None, uses model defaults.
-            Set to 0 for deterministic output, higher values (e.g., 0.7-1.0) for more randomness.
+        temperature (float, optional): Temperature parameter for model sampling. When None, uses model defaults. Set to 0 for deterministic output, higher values (e.g., 0.7-1.0) for more randomness. Some models do not support this parameter.
+        max_reasoning_tokens (int, optional): The maximum number of tokens allowed for the reasoning phase (for supported APIs & Models). Defaults to 0.
+        reasoning_effort (str, optional): The level of effort for models that support variable reasoning lengths (e.g., 'low', 'medium', 'high'). Defaults to None.
+        exclude_reasoning_output (bool, optional): Whether to hide the reasoning tags/tokens from the final parsed output. Defaults to True.
 
     Returns:
         dict[str, any]: Complete parameter dictionary for classification.
@@ -300,6 +305,9 @@ def set_zeroshot_parameters(
         "output_types": output_types,
         "combining_strategies": combining_strategies,
         "temperature": temperature,
+        "max_reasoning_tokens": max_reasoning_tokens,
+        "reasoning_effort": reasoning_effort,
+        "exclude_reasoning_output": exclude_reasoning_output
     }
 
     return parameters
@@ -323,6 +331,9 @@ def single_iterative_zeroshot_classification(
     context: dict[str, any] = None,
     temperature: int = None,
     debug: bool = False,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True
 ) -> dict:
     """
     Classifies a single given text in multiple steps based on the provided parameters and returns the resulting classifications.
@@ -345,6 +356,9 @@ def single_iterative_zeroshot_classification(
         client (any, optional): The client object to interact with the API.
         context (Optional[dict[str, any]], optional): Additional context for the prompt.
         temperature (Optional[int], optional): Optional temperature parameter.
+        max_reasoning_tokens (int, optional): Max tokens for reasoning output. Defaults to 0.
+        reasoning_effort (str, optional): The effort setting for reasoning models ('low', 'medium', 'high'). Defaults to None.
+        exclude_reasoning_output (bool, optional): Whether to exclude the `<think>` or reasoning payload. Defaults to True.
 
 
     Returns:
@@ -387,7 +401,10 @@ def single_iterative_zeroshot_classification(
             print_messages,
             max_retries,
             temperature,
-            debug=debug,
+            max_reasoning_tokens,
+            reasoning_effort,
+            exclude_reasoning_output,
+            debug
         )
 
         if isinstance(classification, dict):

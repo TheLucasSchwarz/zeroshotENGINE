@@ -35,6 +35,7 @@ Key features include:
 *   **Iterative Classification**: Break down complex classification tasks into a series of simpler steps.
 *   **Hierarchical Logic**: Define conditional paths (e.g., if a text is not "political", skip "attack" classification) to save time and cost.
 *   **Multi-API Support**: Seamlessly switch between APIs like OpenAI, OpenRouter, and local models via Ollama.
+*   **Reasoning Model Support**: Harness models equipped with Chain-of-Thought (CoT) and extended reasoning phases (OpenAI o-series, Gemini).
 *   **Parallel Processing**: Classify large pandas DataFrames in parallel to speed up your workflow.
 *   **Prompt Templating**: Easily build and manage complex prompts from a structured format.
 *   **Validation and Retries**: Improve reliability with built-in validation for dual-prediction setups and automatic retries.
@@ -220,6 +221,55 @@ gemini_client = initialize_model(
 )
 ```
 
+### Using Reasoning Models
+
+`zeroshot-engine` fully supports newer generations of "Reasoning" models, which spend time generating hidden or explicit thoughts before outputting the final JSON classification. This is highly effective for difficult classification tasks.
+
+Because different AI providers implement reasoning differently, your settings must match the provider's specific API requirements. 
+
+**⚠️ Important Validation Notice:** The way reasoning parameters are handled varies heavily between models and APIs. Applying the wrong parameter to a model (e.g., sending `reasoning_effort` to a Gemini 2 model) will likely result in an API Error (like an OpenAI 400 Bad Request). 
+
+The following configurations have been **tested and validated**. Other models or custom providers may not work as expected:
+
+| API Provider | Model Family | Supported Reasoning Parameter | Valid Values |
+| :--- | :--- | :--- | :--- |
+| **OpenAI** | GPT-3, GPT-4o | **None** | N/A (Reasoning not supported) |
+| **OpenAI** | GPT-5 and newer | `reasoning_effort` | `"none"`, `"minimal"`, `"low"`, `"medium"`, `"high"`, `"xhigh"` |
+| **OpenRouter / Custom** | Gemini 2 (Flash, Flash Lite, Pro) | `max_reasoning_tokens` | Integer (e.g., `1024`, `4096`) |
+| **OpenRouter / Custom** | Gemini 3 | `reasoning_effort` | `"minimal"`, `"low"`, `"medium"`, `"high"`, `"xhigh"` |
+| **OpenRouter / Custom** | Claude (`model_family="claude"`) | `max_reasoning_tokens` | Integer (Minimum `1024` required by provider) |
+
+You can configure the reasoning behavior using these three parameters in `set_zeroshot_parameters`:
+
+1.  **`reasoning_effort`**: Determines the qualitative depth of thought for supported models. For Google Gemini 3 and OpenAI's newer models, this maps directly to their internal thinking levels, meaning the provider dynamically controls the exact token consumption. 
+2.  **`max_reasoning_tokens`**: Specifies a hard numerical token limit for the reasoning phase. This is primarily used for the Gemini 2 family and Claude models via OpenRouter or Custom compatible endpoints. *(Note: For Claude models, Anthropic generally requires a minimum budget of 1024 tokens).*
+3.  **`exclude_reasoning_output`**: A boolean flag (`True` by default) that ensures the raw reasoning blocks (e.g., `<think>...</think>` tags or extra API reasoning payloads) are cleaned out and isolated before the engine attempts to parse the classification JSON.
+
+---
+
+## Main Functions
+
+### `set_zeroshot_parameters`
+
+**Title**: Set and Validate Parameters for Zero-Shot Classification
+
+**Description**
+
+This function is the primary configuration utility for `zeroshot-engine`. It creates a validated parameter dictionary that governs the behavior of the classification functions (`iterative_zeroshot_classification`, `parallel_iterative_zeroshot_classification`, etc.). It ensures all necessary settings are provided, applies sensible defaults, and performs validation checks on the inputs.
+
+**Arguments**
+
+*(... standard arguments remain the same ...)*
+
+| Argument | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `temperature` | `float` | `None` | The sampling temperature for the model. A lower value makes the output more deterministic. |
+| **`max_reasoning_tokens`** | `int` | `0` | The token limit allocated specifically for the reasoning/thinking phase (supported on OpenRouter/Custom endpoints). |
+| **`reasoning_effort`** | `str` | `None` | The level of effort for reasoning models (e.g., `'low'`, `'medium'`, `'high'`). Used for OpenAI and Gemini reasoning models. |
+| **`exclude_reasoning_output`** | `bool` | `True` | Strips out the internal reasoning tokens (like `<think>` blocks) to ensure clean JSON parsing. |
+
+---
+
 ---
 
 ## Core Concepts
@@ -319,6 +369,9 @@ set_zeroshot_parameters(
     print_prompts: bool = False,
     debug: bool = False,
     temperature: float = None,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True
 )
 ```
 
@@ -345,6 +398,9 @@ set_zeroshot_parameters(
 | `print_prompts` | `bool` | `False` | If `True`, prints the full, formatted prompt that is sent to the model for each classification step. Useful for debugging prompts. |
 | `debug` | `bool` | `False` | If `True`, prints the raw, unparsed response from the model. Useful for debugging model behavior and response format issues. |
 | `temperature` | `float` | `None` | The sampling temperature for the model. A lower value (e.g., `0.0`) makes the output more deterministic, while a higher value increases randomness. If `None`, the model's default temperature is used. |
+| `max_reasoning_tokens` | `int` | `0` | Specifies a hard numerical token limit for the reasoning phase. Used primarily by Gemini 2 and Claude models via OpenRouter or Custom compatible endpoints. |
+| `reasoning_effort` | `str` | `None` | Determines the qualitative depth of thought (e.g., `"low"`, `"medium"`, `"high"`). Used natively by OpenAI's newer reasoning models and Google Gemini 3 models. |
+| `exclude_reasoning_output`| `bool` | `True` | If `True`, ensures the raw reasoning blocks (e.g., `<think>...</think>`) are cleaned out and isolated before attempting to parse the classification JSON. |
 
 **Details**
 
