@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: zeroshot-engine
-Version: 0.2.0
+Version: 0.2.1
 Summary: A zero-shot classification engine based on various LLM models
 Author-email: Lucas Schwarz <luc.schwarz@posteo.de>
 License: 
@@ -305,7 +305,7 @@ For more detailed information about the framework and its implementation, please
 
 * **[Performance Evaluation](docs/Performance_Evaluation.md)** - Benchmark results and performance metrics across different models and classification tasks.
 
-* **[In-Depth-Demo-Explanation](docs/HZSC_Demo_Showcase.md)** - Learn how the HZSC works in detail.
+* **[Prompting Explanation](docs/HZSC_Demo_Showcase.md)** - Learn how create the prompt table for the HZSC workflow.
 
 * **[Tutorial: Get started with your first classification](docs/Tutorial_Get_Started.md)** - Create your first projects with prompt, code examples and text to learn how to set up the classifer.
 
@@ -404,16 +404,16 @@ luc.schwarz@posteo.de
 
 If you use `zeroshot-engine` in your research, please cite it as follows:
 
-> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.1.5) [Computer software]. https://doi.org/10.5281/zenodo.16890143
+> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.2.1) [Computer software]. [https://doi.org/10.5281/zenodo.16890143](https://doi.org/10.5281/zenodo.17623667)
 
 ```bibtex
 @software{Schwarz_zeroshot-engine_A_scientific_2025,
         author = {Schwarz, Lucas},
-        doi = {10.5281/zenodo.16890143},
+        doi = {10.5281/zenodo.17623667},
         month = mar,
         title = {{zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models}},
         url = {https://github.com/TheLucasSchwarz/zeroshotENGINE},
-        version = {0.2.0},
+        version = {1},
         year = {2025}
 }
 ```

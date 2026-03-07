@@ -1,7 +1,7 @@
 """zeroshot_engine package."""
 
 # Package version
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 # Package metadata
 __author__ = "Lucas Schwarz"

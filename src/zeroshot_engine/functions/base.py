@@ -208,6 +208,9 @@ def request_to_model(
     prompt: str = "",
     temperature: int = None,
     debug: bool = False,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True
 ) -> dict:
     """
     Sends a request to the specified model and returns the response as a dictionary.
@@ -222,16 +225,58 @@ def request_to_model(
         prompt (str): The prompt to send to the model.
         temperature (int, optional): The temperature to use for the model. Defaults to None.
         debug (bool, optional): Whether to print the raw model response. Defaults to False.
+        max_reasoning_tokens (int, optional): Max tokens for reasoning output. Defaults to 0.
+        reasoning_effort (str, optional): The effort setting for reasoning models ('low', 'medium', 'high'). Defaults to None.
+        exclude_reasoning_output (bool, optional): Whether to exclude the `<think>` or reasoning payload. Defaults to True.
 
     Returns:
         dict: A dictionary containing the model's response.
     """
     if model_family in ["openai"]:
+        model_name_lower = model.lower()
+        if "gpt-4" in model_name_lower or "gpt-3" in model_name_lower:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=temperature,
+            )
+            raw_response = response.choices[0].message.content
+        else:
+            safe_effort = reasoning_effort if reasoning_effort not in [None, "None", "none", ""] else "medium"
+            response = client.responses.create(
+                model=model,
+                reasoning={"effort": safe_effort},
+                input=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+            raw_response = next((c.text for b in getattr(response, 'output', []) if getattr(b, 'type', '') == 'message' for c in getattr(b, 'content', []) if getattr(c, 'type', '') == 'output_text'), "")
+        if debug:
+            print("\n" + "=" * 80)
+            print("RAW MODEL RESPONSE:")
+            print("-" * 80)
+            print(raw_response)
+            print("=" * 80 + "\n")
+        response_dict = json.loads(raw_response)
+
+    if model_family in ["claude"] and model:
+        reasoning_payload = {
+            "max_tokens": max_reasoning_tokens,
+            "exclude": exclude_reasoning_output
+        }
         response = client.chat.completions.create(
             model=model,
             messages=[
                 {"role": "user", "content": prompt},
             ],
+            extra_body={
+                "reasoning": reasoning_payload
+            },
             temperature=temperature,
         )
         raw_response = response.choices[0].message.content
@@ -241,7 +286,52 @@ def request_to_model(
             print("-" * 80)
             print(raw_response)
             print("=" * 80 + "\n")
-        response_dict = json.loads(raw_response)
+        pattern = r"\{(.*?)\}"
+        match = re.search(pattern, raw_response, re.DOTALL)
+        if match:
+            cleaned_response_dict_string = match.group(0)
+            response_dict = json.loads(cleaned_response_dict_string)
+        else:
+            response_no_dict = "no dict possible"
+            response_dict = json.loads(response_no_dict)
+
+    if model_family in ["gemini"] and model:
+        model_name_lower = model.lower()
+        if "gemini-3" in model_name_lower:
+            reasoning_payload = {
+                "effort": reasoning_effort,
+                "exclude": exclude_reasoning_output
+            }
+        else:
+            reasoning_payload = {
+                "max_tokens": max_reasoning_tokens,
+                "exclude": exclude_reasoning_output
+            }
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "user", "content": prompt},
+            ],
+            extra_body={
+                "reasoning": reasoning_payload
+            },
+            temperature=temperature,
+        )
+        raw_response = response.choices[0].message.content
+        if debug:
+            print("\n" + "=" * 80)
+            print("RAW MODEL RESPONSE:")
+            print("-" * 80)
+            print(raw_response)
+            print("=" * 80 + "\n")
+        pattern = r"\{(.*?)\}"
+        match = re.search(pattern, raw_response, re.DOTALL)
+        if match:
+            cleaned_response_dict_string = match.group(0)
+            response_dict = json.loads(cleaned_response_dict_string)
+        else:
+            response_no_dict = "no dict possible"
+            response_dict = json.loads(response_no_dict)
 
     if model_family in ["openrouter", "custom"]:
         response = client.chat.completions.create(
@@ -249,6 +339,12 @@ def request_to_model(
             messages=[
                 {"role": "user", "content": prompt},
             ],
+            extra_body={
+                "reasoning": {
+                    "max_tokens": int(max_reasoning_tokens),
+                    "exclude": exclude_reasoning_output
+                }
+            },
             temperature=temperature,
         )
         raw_response = response.choices[0].message.content
@@ -319,7 +415,10 @@ def classification_step(
     print_messages: bool = False,
     max_retries: int = 2,
     temperature: int = None,
-    debug: bool = False,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True,
+    debug: bool = False
 ) -> dict:
     """
     Classifies the text using the model and the given prompt.
@@ -345,7 +444,7 @@ def classification_step(
     while retries > 0:
         try:
             response_dict = request_to_model(
-                model, model_family, client, prompt, temperature, debug
+                model, model_family, client, prompt, temperature, debug, max_reasoning_tokens, reasoning_effort, exclude_reasoning_output
             )
             print_messages(response_dict)
             if any(key in response_dict for key in valid_keys):

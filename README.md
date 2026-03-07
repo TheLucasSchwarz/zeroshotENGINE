@@ -21,6 +21,7 @@ This project is open-source and was developed with no financial interests. It is
 *   Flexible **prompt-driven zero-shot classification** (with few-shot option).
 *   Supports diverse classification tasks: **multi-label/class, sequential (IZSC), and hierarchical (HZSC)**.
 *   **Multi-API Support**: Seamlessly switch between APIs like OpenAI, OpenRouter, and local models via Ollama or connect to any OpenAI-compatible API (e.g. Google Gemini API) using custom base URLs.
+*   **Reasoning Model Support**: Harness models equipped with Chain-of-Thought (CoT) and extended reasoning phases (OpenAI 5 and o-series, Google Gemini, Anthropic Claude).
 *   **Parallel Processing**: Classify large pandas DataFrames in parallel to speed up your workflow.
 *   **Prompt Templating**: Easily build and manage complex prompts from a structured format.
 *   **Validation and Retries**: Improve reliability with built-in validation for dual-prediction setups and automatic retries.
@@ -176,7 +177,7 @@ luc.schwarz@posteo.de
 
 If you use `zeroshot-engine` in your research, please cite it as follows:
 
-> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.2.0) [Computer software]. [https://doi.org/10.5281/zenodo.16890143](https://doi.org/10.5281/zenodo.17623667)
+> Schwarz, L. (2025). zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models (Version 0.2.1) [Computer software]. [https://doi.org/10.5281/zenodo.16890143](https://doi.org/10.5281/zenodo.17623667)
 
 ```bibtex
 @software{Schwarz_zeroshot-engine_A_scientific_2025,
@@ -185,7 +186,7 @@ If you use `zeroshot-engine` in your research, please cite it as follows:
         month = mar,
         title = {{zeroshot-engine: A scientific zero-shot text classification engine based on various LLM models}},
         url = {https://github.com/TheLucasSchwarz/zeroshotENGINE},
-        version = {0.2.0},
+        version = {1},
         year = {2025}
 }
 ```
