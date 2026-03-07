@@ -369,6 +369,9 @@ set_zeroshot_parameters(
     print_prompts: bool = False,
     debug: bool = False,
     temperature: float = None,
+    max_reasoning_tokens: int = 0,
+    reasoning_effort: str = None,
+    exclude_reasoning_output: bool = True
 )
 ```
 
@@ -395,6 +398,9 @@ set_zeroshot_parameters(
 | `print_prompts` | `bool` | `False` | If `True`, prints the full, formatted prompt that is sent to the model for each classification step. Useful for debugging prompts. |
 | `debug` | `bool` | `False` | If `True`, prints the raw, unparsed response from the model. Useful for debugging model behavior and response format issues. |
 | `temperature` | `float` | `None` | The sampling temperature for the model. A lower value (e.g., `0.0`) makes the output more deterministic, while a higher value increases randomness. If `None`, the model's default temperature is used. |
+| `max_reasoning_tokens` | `int` | `0` | Specifies a hard numerical token limit for the reasoning phase. Used primarily by Gemini 2 and Claude models via OpenRouter or Custom compatible endpoints. |
+| `reasoning_effort` | `str` | `None` | Determines the qualitative depth of thought (e.g., `"low"`, `"medium"`, `"high"`). Used natively by OpenAI's newer reasoning models and Google Gemini 3 models. |
+| `exclude_reasoning_output`| `bool` | `True` | If `True`, ensures the raw reasoning blocks (e.g., `<think>...</think>`) are cleaned out and isolated before attempting to parse the classification JSON. |
 
 **Details**
 
